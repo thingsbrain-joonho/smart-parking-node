@@ -1,0 +1,659 @@
+<% layout('base') %>
+
+<style>
+    .dot {
+        overflow: hidden;
+        float: left;
+        width: 12px;
+        height: 12px;
+        background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/mini_circle.png');
+    }
+
+    .dotOverlay {
+        position: relative;
+        bottom: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        border-bottom: 2px solid #ddd;
+        float: left;
+        font-size: 12px;
+        padding: 5px;
+        background: #fff;
+    }
+
+    .dotOverlay:nth-of-type(n) {
+        border: 0;
+        box-shadow: 0px 1px 2px #888;
+    }
+
+    .number {
+        font-weight: bold;
+        color: #ee6152;
+    }
+
+    .dotOverlay:after {
+        content: '';
+        position: absolute;
+        margin-left: -6px;
+        left: 50%;
+        bottom: -8px;
+        width: 11px;
+        height: 8px;
+        background: url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white_small.png')
+    }
+
+    .distanceInfo {
+        position: relative;
+        top: 5px;
+        left: 5px;
+        list-style: none;
+        margin: 0;
+    }
+
+    .distanceInfo .label {
+        display: inline-block;
+        width: 50px;
+    }
+
+    .distanceInfo:after {
+        content: none;
+    }
+
+    .current {
+        color: green;
+        background-color: green;
+    }
+
+    .lot-info {
+        color: green;
+        margin-left: 5px;
+    }
+</style>
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Home</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <!-- <li>
+                    <a href="/draw">
+                        <i class="fa fa-car"></i>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Home</span></li>
+            </ol>
+
+            <!-- <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a> -->
+        </div>
+    </header>
+
+    <div class="row" style="margin-top:-60px;">
+        <div class="col-md-12">
+            <div class="panel-group" id="accordion2">
+                <div class="panel panel-accordion panel-accordion-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2"
+                                href="#collapse2One">
+                                <i class="fa fa-star"></i> 필터링
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse2One" class="accordion-body collapse">
+                        <div class="panel-body">
+                            <!-- <form class="form-horizontal form-bordered" method="get"> -->
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="inputSuccess">지역</label>
+                                <div class="col-md-6">
+                                    <div id="region">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="option1" checked id="mine"> 내가 관리하는 주차장
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="option1" checked id="jeju"> 제주시
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="option2" checked id="seogwipo"> 서귀포시
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6" style="margin:0 auto;">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="option1" checked id="mine"> 내가 관리하는 주차장
+                                </label>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="map" style="width:100%;height:500px;"></div>
+            <script type="text/javascript"
+                src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2a7a38f29f4b0e7341436e80dcf65ff1&libraries=services,clusterer,drawing">
+            </script>
+            <!-- daum map script -->
+        </div>
+    </div>
+
+    <div class="row" id="myParkingList">
+    </div>
+
+    <div class="text-center">
+        <ul id="pagin" class="pagination">
+        </ul>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12" style="text-align:center;">
+            <button type="button" style="width:30%;" class="btn btn-success btn-lg btn-default"
+                onclick="location.href='/add'">
+                <i class="fa fa-plus-square"></i> 주차장 추가
+            </button>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    var currentInfoWindow;
+    // var allMarkers = [];
+    // var jejuMarker = [];
+    // var seogwipoMarker = [];
+
+    var myMarkers = [];
+    var myJejuMarker = [];
+    var mySeogwipoMarker = [];
+
+    // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+    var infowindow = new daum.maps.InfoWindow({
+        zIndex: 1
+    });
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new daum.maps.LatLng(33.489542, 126.523265), // 지도의 중심좌표
+            level: 8 // 지도의 확대 레벨
+        };
+
+    // 지도를 생성합니다
+    var map = new daum.maps.Map(mapContainer, mapOption);
+
+    // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+    var mapTypeControl = new daum.maps.MapTypeControl();
+
+    // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+    // daum.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+    map.addControl(mapTypeControl, daum.maps.ControlPosition.TOPRIGHT);
+
+    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+    var zoomControl = new daum.maps.ZoomControl();
+    map.addControl(zoomControl, daum.maps.ControlPosition.RIGHT);
+
+    // 마커 클러스터러 생성
+    var clusterer = new daum.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+        minLevel: 6 // 클러스터 할 최소 지도 레벨
+    });
+
+    var place = <%-JSON.stringify(list) %>;
+    var pk_id = <%-JSON.stringify(pk_list) %>;
+    var uid = <%-JSON.stringify(uid) %>;
+    var define_total = <%-JSON.stringify(define_total) %>;
+    var seogwipo_total = <%-JSON.stringify(seogwipo_total) %>;
+    console.log(seogwipo_total);
+
+    pk_id = pk_id + '';
+    var pk_list = pk_id.split(',');
+    // console.log(typeof(pk_list));
+
+    var div_count = 0;
+    var total_inner = "";
+    var list_length = 0;
+
+    if (pk_id == '0') {
+      console.log(place.length);
+        for (var i = 0; i < place.length; i++) {
+            // console.log(place[i]);
+            displayMarker(place[i]);
+            // addParkingList(place[i], Math.floor(Math.random() * place[i].lot));
+        }
+        list_length+=2;
+        for(var i = 2; i < place.length; i++){
+            if(place[i].uid == uid){
+              // console.log(place[i]);
+                // console.log(place[i]);
+                // addParkingList(place[i], Math.floor(Math.random() * place[i].lot));
+                list_length++;
+            }
+        }
+
+        // 첫번째, 두번째는 제주와 서귀포
+        addParkingList(place[0], Math.floor(Math.random() * place[0].lot));
+        addParkingList(place[1], Math.floor(Math.random() * place[1].lot));
+
+        // 두번째부터 따로 확인해서 uid 맞는 주차장 리스트에 등록
+        for(var i = 2; i < place.length; i++){
+            if(place[i].uid == uid){
+              // console.log(place);
+                // console.log(place[i]);
+                // addParkingList(place[i], Math.floor(Math.random() * place[i].lot));
+                addParkingList(place[i], 0);
+            }
+        }
+    } else {
+      for (var i in pk_list) {
+          var id = parseInt(pk_list[i]);
+          // console.log(i + ' type: ' + typeof(id));
+          displayMarker(place[id - 1]);
+          // addParkingList(place[id - 1], Math.floor(Math.random() * place[i].lot));
+          // addParkingList(place[id - 1], 0);
+          list_length++;
+
+          if(place[i].uid == uid){
+              // console.log(place[i]);
+              // addParkingList(place[id - 1], Math.floor(Math.random() * place[i].lot));
+              // addParkingList(place[id - 1], 0);
+              list_length++;
+          }
+      }
+        for (var i in pk_list) {
+            var id = parseInt(pk_list[i]);
+            // console.log(i + ' type: ' + typeof(id));
+            displayMarker(place[id - 1]);
+            // addParkingList(place[id - 1], Math.floor(Math.random() * place[i].lot));
+            addParkingList(place[id - 1], 0);
+
+            if(place[i].uid == uid){
+                console.log(place);
+                // addParkingList(place[id - 1], Math.floor(Math.random() * place[i].lot));
+                addParkingList(place[id - 1], 0);
+            }
+        }
+    }
+
+    // 지도에 마커를 표시하는 함수입니다
+    function displayMarker(place) {
+        var lot = place.lot;
+        var randNum = Math.floor(Math.random() * lot);
+        var imageSrc;
+        if (randNum / lot <= 0.2) {
+            imageSrc = 'images/v20-shadow.png'
+        } else if (randNum / lot <= 0.4) {
+            imageSrc = 'images/v40-shadow.png'
+        } else if (randNum / lot <= 0.6) {
+            imageSrc = 'images/v60-shadow.png'
+        } else if (randNum / lot <= 0.8) {
+            imageSrc = 'images/v80-shadow.png'
+        } else {
+            imageSrc = 'images/v100-shadow.png'
+        }
+
+        var imageSize = new daum.maps.Size(30, 35), // 마커이미지의 크기입니다
+            imageOption = {
+                offset: new daum.maps.Point(9, 31)
+            }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+        // 디파인 사무실 마커 및 주차면 예외처리
+        if (place.id == '4051000000' || place.id == '4051000001') {
+            // randNum = ;
+            imageSrc = 'images/define-logo.png';
+            imageSize = new daum.maps.Size(40, 35),
+                imageOption = {
+                    offser: new daum.maps.Point(9, 31)
+                };
+        }
+
+        var markerImage = new daum.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
+        // 마커를 생성하고 지도에 표시합니다
+        var marker = new daum.maps.Marker({
+            map: map,
+            position: new daum.maps.LatLng(place.map_y, place.map_x),
+            image: markerImage
+        });
+
+        if (place.office == '제주특별자치도 제주시') {
+            // jejuMarker.push(marker);
+            myJejuMarker.push(marker);
+        } else if(place.office == '제주특별자치도 서귀포시청'){
+            // seogwipoMarker.push(marker);
+            mySeogwipoMarker.push(marker);
+        }
+        // allMarkers.push(marker);
+        myMarkers.push(marker);
+
+        // var pk_list = <%- JSON.stringify(pk_list) %>
+        // if (pk_list == 0) {
+        //   myMarkers.push(marker);
+        //   if (place.id != '4051000000' && place.id != '4051000001') {
+        //     addParkingList(place, randNum);
+        //   }
+        // }
+
+        // 마커에 클릭이벤트를 등록합니다
+        // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+        // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
+        daum.maps.event.addListener(marker, 'click', function () {
+            // 디파인 주차장 예외처리
+            if (place.id == '4051000000') {
+                var content = '<div class="placeinfo">' +
+                    '<a class="title" href="' + "/park?id=" + place.id + '" target="_blank" title="' + place
+                    .name + '">' + place.name + '</a>' +
+                    '<span class="address">' + '주소 : ' + place.address + '</span>' +
+                    '<span id="lot-info-id" class="load">' + '주차면 : ' + (6 - define_total[0].total) + '/6개' +
+                    '</span>' +
+                    '</div>' +
+                    '<div class="after"></div>';
+            }
+            // 서귀포 주차장 예외처리
+            else if (place.id == '4051000001') {
+                var content = '<div class="placeinfo">' +
+                    '<a class="title" href="/seogwipo" target="_blank" title="' + place
+                    .name + '">' + place.name + '</a>' +
+                    '<span class="address">' + '주소 : ' + place.address + '</span>' +
+                    '<span id="lot-info-id" class="load">' + '주차면 : ' + (42 - seogwipo_total[0].total) +
+                    '/42개' + '</span>' +
+                    '</div>' +
+                    '<div class="after"></div>';
+            } else {
+                var content = '<div class="placeinfo">' +
+                    '<a class="title" href="' + "/park?id=" + place.id + '" target="_blank" title="' + place
+                    .name + '">' + place.name + '</a>' +
+                    '<span class="address">' + '주소 : ' + place.address + '</span>' +
+                    '<span class="load">' + '주차면 : ' + randNum + '/' + lot + '개' + '</span>' +
+                    '</div>' +
+                    '<div class="after"></div>';
+            }
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+            currentInfoWindow = infowindow;
+        });
+
+        clusterer.addMarker(marker);
+    }
+
+    daum.maps.event.addListener(map, 'dragend', function () {
+        if (currentInfoWindow !== undefined) {
+            currentInfoWindow.close();
+        }
+    });
+
+    function makeClickListener(map, marker, infowindow) {
+        return function () {
+            infowindow.open(map, marker);
+        };
+    }
+
+    function showMarkers() {
+        clusterer.clear();
+        for (var i = 0; i < myMarkers.length - 1; i++) {
+            myMarkers[i].setMap(null);
+        }
+
+        var markers;
+
+        if ($('#mine').prop('checked')) {
+            if ($('#jeju').prop('checked') && $('#seogwipo').prop('checked')) {
+                console.log('j&s');
+                markers = myMarkers;
+            } else if ($('#jeju').prop('checked')) {
+                console.log('j');
+                markers = myJejuMarker;
+            } else if ($('#seogwipo').prop('checked')) {
+                console.log('s');
+                markers = mySeogwipoMarker;
+            } else {
+                return;
+            }
+        }
+        // else{
+        //     if ($('#jeju').prop('checked') && $('#seogwipo').prop('checked')) {
+        //         console.log('j&s');
+        //         markers = allMarkers;
+        //     } else if ($('#jeju').prop('checked')) {
+        //         console.log('j');
+        //         markers = jejuMarker;
+        //     } else if ($('#seogwipo').prop('checked')) {
+        //         console.log('s');
+        //         markers = seogwipoMarker;
+        //     } else {
+        //         return;
+        //     }
+        // }
+
+        // clusterer.addMarkers(markers);
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
+            clusterer.addMarker(markers[i]);
+        }
+    }
+
+    // function showMyMarkers() {
+    //     clusterer.clear();
+    //     for (var i = 0; i < allMarkers.length - 1; i++) {
+    //         allMarkers[i].setMap(null);
+    //     }
+
+    //     if ($('#mine').prop('checked')) {
+    //         var markers = myMarkers;
+    //         for (var i = 0; i < markers.length; i++) {
+    //             markers[i].setMap(map);
+    //             clusterer.addMarker(markers[i]);
+    //         }
+    //     }
+    // }
+
+    $(document).ready(function () {
+        $('#jeju').on('click', function () {
+            if($('#jeju').prop('checked')){
+                $('#mine').prop('checked', true);
+            }
+            showMarkers();
+
+            if(!$('#jeju').prop('checked') && !$('#seogwipo').prop('checked')){
+                $('#mine').prop('checked', false);
+            }
+        });
+        $('#seogwipo').on('click', function () {
+            if($('#seogwipo').prop('checked')){
+                $('#mine').prop('checked', true);
+            }
+            showMarkers();
+
+            if(!$('#jeju').prop('checked') && !$('#seogwipo').prop('checked')){
+                $('#mine').prop('checked', false);
+            }
+        });
+        $('#mine').on('click', function () {
+            if($('#mine').prop('checked')){
+                $('#jeju').prop('checked', true);
+                $('#seogwipo').prop('checked', true);
+                showMarkers();
+            }else{
+                $('#jeju').prop('checked', false);
+                $('#seogwipo').prop('checked', false);
+                showMarkers();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // 비율 읽어와서 디파인 주차장 리스트에 업데이트
+        var d_ratio = Math.floor((6 - define_total[0].total) / 6 * 100);
+        var s_ratio = Math.floor((42 - seogwipo_total[0].total) / 42 * 100);
+        // console.log(d_ratio + ", " + s_ratio);
+
+        changePercentage('4051000000', d_ratio);
+        changePercentage('4051000001', s_ratio);
+        changeText('4051000000', (6 - define_total[0].total), 6);
+        changeText('4051000001', (42 - seogwipo_total[0].total), 42);
+    });
+
+    function changePercentage(target, ratio) {
+        var percentClass;
+        if (ratio <= 10) {
+            percentClass = "progress-bar-info ";
+        } else if (ratio <= 50) {
+            percentClass = "progress-bar-primary ";
+        } else if (ratio <= 66) {
+            percentClass = "progress-bar-warning ";
+        } else {
+            percentClass = "progress-bar-danger ";
+        }
+        percentClass += "progress-bar progress-bar-striped active progress-bar-animated";
+
+        $("#" + target + " #bar-" + target).removeClass();
+        $("#" + target + " #bar-" + target).addClass(percentClass);
+        $("#" + target + " #bar-" + target).width(ratio + "%");
+        $("#" + target + " #bar-" + target).html("주차율 " + ratio + "%");
+    }
+
+    function changeText(target, current, max) {
+        // console.log($("#" + target + " #lot-info").text());
+        $("#" + target + " .lot-info").html("주차면 : " + current + "/" + max + "개");
+    }
+
+    function addParkingList(place, randNum) {
+        var percentage = Math.floor(randNum / place.lot * 100);
+        var percentClass = 'progress-bar-success';
+        if (percentage <= 20) {} else if (percentage <= 40) {
+            percentClass = "progress-bar-info";
+        } else if (percentage <= 60) {
+            percentClass = "progress-bar-primary";
+        } else if (percentage <= 80) {
+            percentClass = "progress-bar-warning";
+        } else {
+            percentClass = "progress-bar-danger";
+        }
+        var div = document.getElementById('myParkingList');
+        var address = place.address;
+        if (address.length > 30) {
+            address = address.substring(0, 20);
+        }
+        var charge = '<code>무료</code>';
+        if (place.charge_info != '0') {
+            // charge = '<code>' + place.charge_info + '</code>';
+            charge = '<code>유료</code>';
+        }
+        // console.log(place.id);
+        var url = '/park?id=' + place.id;
+        if (place.id == '4051000001') {
+            url = '/seogwipo';
+        }
+        // 운영시간 예외처리 하기
+        // 지금은 시간이 없어서 하드코딩으로 사무실, 서귀포쪽 주차장만 운영중인 것으로 작성함.
+        var available = "";
+        if(place.id == '4051000000' || place.id == '4051000001'){
+            available = '<code>운영중 </code>';
+        }
+        // console.log(place.lot);
+
+        cur_inner = '<div class="col-md-3" id=\"' + place.id + '\">' +
+            '<section class="panel panel-featured panel-featured-primary">' +
+            '<header class="panel-heading">' +
+            '<div class="panel-actions" style="float:right;">' +
+            '<a href="#" class="fa fa-caret-down"></a>' +
+            '<a href="/setting?id=' + place.id + '" class="fa fa-cog"></a>' +
+            '</div>' +
+            '<div style="white-space:normal;">' +
+            // '<h2 class="panel-title" style="overflow:hidden; ">' + place.name + '</h2>' +
+            '<h2 class="panel-title">' + place.name + '</h2>' +
+            '<p class="panel-subtitle">' + address + '</p>' +
+            '</div>' +
+            '</header>' +
+            '<div class="panel-body">' +
+            available +
+            '<code>' + place.divide + ' </code>' +
+            '<code>' + place.type + ' </code><br>' +
+            charge +
+            '<h5 class="lot-info">주차면 : ' + randNum + '/' + place.lot + '개</h5>' +
+            '<div class="row">' +
+            '</div>' +
+            '<div class="progress progress-striped light active m-md">' +
+            '<div id=\"bar-' + place.id + '\" class="progress-bar ' + percentClass +
+            '" role="progressbar" aria-valuenow="' + percentage +
+            '" aria-valuemin="0" aria-valuemax="100" style="width: ' + randNum / place.lot * 100 + '%;">' + '주차율' + Math
+            .floor(percentage) + '%' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="panel-footer" style="text-align:right;">' +
+            '<button class="btn btn-primary" onclick="window.open(\'' + url + '\')">이동</button>' +
+            '</div>' +
+            '</section>' +
+            '</div>';
+
+        total_inner += cur_inner;
+        div_count += 1;
+        // if(div_count == 1){
+        //   div.innerHTML += ('<div class="col-md-12">' + cur_inner);
+        //   console.log(div.innerHTML);
+        // }
+        // if(div_count % 4 == 0){
+        //   total_inner = '<div class="col-md-12">' + total_inner + '</div>';
+        //   div.innerHTML += total_inner;
+        //   total_inner="";
+        // }
+        // //다 된 경우 여태꺼 다 넣기
+        // else{
+        //   div.innerHTML += cur_inner;
+        // }
+        console.log(div_count);
+        console.log(list_length);
+
+        //아직 개수 다 안된 경우
+        if(div_count != list_length){
+          //개수 다 안되고 4
+          if(div_count % 4 == 0){
+            total_inner = '<div class="col-md-12">' + total_inner + '</div>';
+            div.innerHTML += total_inner;
+            total_inner="";
+          }
+        }
+        //다 된 경우 여태꺼 다 넣기
+        else{
+          div.innerHTML += total_inner;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    // pagination
+    pageSize = 8;
+    var pageCount = $(".col-md-3").length / pageSize;
+
+    for (var i = 0; i < pageCount; i++) {
+        $("#pagin").append('<li><a href="#">' + (i + 1) + '</a></li>');
+    }
+    // $("#pagin li").first().find("a").addClass("current")
+    $("#pagin li").first().find("a").css("background-color", "rgba(235,235,235,1)");
+    showPage = function (page) {
+        $(".col-md-3").hide();
+        $(".col-md-3").each(function (n) {
+            if (n >= pageSize * (page - 1) && n < pageSize * page)
+                $(this).show();
+        });
+    }
+    showPage(1);
+
+    $("#pagin li a").click(function () {
+        // $("pagin li a").removeClass("current");
+        // $(this).addClass("current");
+        $( "#pagin li a" ).each(function( index ) {
+            $(this).css("background-color", "rgba(255,255,255,1)");
+        });
+        // $("pagin li a").css("background-color", "rgba(255,255,255,1)");
+        $(this).css("background-color", "rgba(235,235,235,1)");
+        showPage(parseInt($(this).text()));
+    })
+</script>

@@ -1,0 +1,157 @@
+<style>
+    /* .cam {
+        max-width: 100%;
+        height: auto;
+    } */
+    #load{
+      /* width : 100%;
+      height : 100%; */
+      max-width: 100%;
+      height: auto;
+    }
+    #cam{
+      max-width: 100%;
+      height: auto;
+    }
+    #rect{
+      max-width: 100%;
+      height: auto;
+    }
+</style>
+
+<!-- jquery CDN 임포트 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<!-- jsmpeg 소스 임포트 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsmpeg/0.1/jsmpg.js"></script>
+
+<!-- link user CSS -->
+<link rel="stylesheet" href="/stylesheets/user.css">
+
+<title>cam <%= cam_id %></title>
+
+<!-- Hello World!
+This is cam <%= cam_id %> -->
+
+<div class="loading-layer"></div>
+<!-- <div class="loading-text" style="position:fixed; top:60%; left:45%; visibility:visible;">LOADING...</div> -->
+
+<!-- <div id="cam">
+    <canvas class="cam"></canvas>
+    <canvas id="rect"></canvas>
+</div> -->
+<!-- <div id="load" style="width:860px; height:490px; margin:0 auto;"> -->
+<div id="load" style="position:relative; margin:0 auto;">
+  <canvas id="cam" style="position:absolute; left: 0px; top: 0px;"></canvas>
+  <canvas id="rect" style="position:absolute; left: 0px; top: 0px;"></canvas>
+</div>
+
+<!-- 해당 포트에 웹소켓 연결 -->
+<script>
+    // 카메라 아이디에 따라서 다른 포트와 연결시켜준다.
+    var id = parseInt("<%= cam_id %>");
+    // console.log('port connected to ' + id);
+    var socket = 'ws://definetestserver.iptime.org:990' + id;
+    if (id >= 10) {
+        socket = 'ws://definetestserver.iptime.org:99' + id;
+    }
+    var client = new WebSocket(socket);
+    //var canvas = document.querySelector('canvas');
+    var camCanvas = document.getElementById("cam");
+    var player = new jsmpeg(client, {
+        canvas: camCanvas
+    });
+    var loadDiv = document.getElementById("load");
+    // console.log("load");
+    // console.log(loadDiv);
+    // console.log(loadDiv.width);
+    // console.log(loadDiv.height);
+    // console.log("camCanvas");
+    // console.log(camCanvas.width);
+    // console.log(camCanvas.height);
+
+    var isNewStream = "<%= isNewStream %>";
+    // console.log(isNewStream);
+    // rtsp가 연결되는 동안 로딩되었다가 새로고침해주는 스크립트(연결 안되어있는 경우만)
+    if (isNewStream == 'true') {
+        $(".loading-layer").attr('style', 'visibility:visible');
+        setTimeout(function () {
+            if (window.location.href.substr(-2) !== '?r') {
+                window.location = window.location.href + '?r';
+                // console.log('cam is connected!');
+            }
+        }, 2500);
+    } else {
+
+    }
+    //실시간 영상에 마커 표시
+    var mark_position = <%- JSON.stringify(mark_position) %>;
+    var cam_lot = <%- JSON.stringify(cam_lot) %>;
+    var cur_cam_lot = cam_lot[id];
+    var cur_lot_use = new Array(50);
+    for(var i = 0; i<50; i++){
+      cur_lot_use[i] = 0;
+    }
+    //사각형 마커 표시할 캔버스
+    var rectCanvas = document.getElementById("rect");
+
+    var ctx = rectCanvas.getContext("2d");
+    rectCanvas.width = 1920;
+    rectCanvas.height = 1080;
+    //when window changes
+    // $(window).resize(function(){
+    //   console.log($(window).width());
+    //   console.log($(window).height());
+    // });
+    client.addEventListener('message', function(event){
+      if (typeof(event.data) == 'string'){
+        ctx.clearRect(0,0,rectCanvas.width, rectCanvas.height);
+        obj = JSON.parse(event.data);
+        cur_lot_use[obj.lot_id] = obj.lot_use;
+        for(var i = 0; i< cur_cam_lot.length; i++){
+          cur_lot_id = cur_cam_lot[i];
+          rectPosition = mark_position[cur_lot_id];
+          drawRectangle(cur_lot_id, cur_lot_use[cur_lot_id]);
+        }
+        // rectPosition = mark_position[obj.lot_id];
+        // drawRectangle(obj.lot_id, obj.lot_use);
+      }
+    });
+
+    function drawRectangle(id, use) {
+      console.log(id + " " + use);
+      // console.log('drawing...');
+      if (use == 0) {
+          ctx.strokeStyle = "red";
+      } else if (use == 1) {
+          ctx.strokeStyle = "blue";
+      }
+      ctx.beginPath();
+      ctx.rect(rectPosition.width, rectPosition.height, rectPosition.width_plus, rectPosition.height_plus);
+      ctx.lineWidth=5;
+      ctx.stroke();
+    }
+
+</script>
+
+<!-- 창 닫기 이벤트 -->
+<script>
+    var data = parseInt("<%= cam_id %>");
+    window.onbeforeunload = function () {
+        // var post = 'close';
+        console.log('[CLIENT] onbeforeunload');
+        $.ajax({
+            url: '',
+            dataType: 'json',
+            type: 'POST',
+            data: {
+                data: data
+            },
+            success: function (result) {
+                if (result) {
+                    console.log('success');
+                }
+            }
+        });
+        // return "disconnect";
+    }
+</script>

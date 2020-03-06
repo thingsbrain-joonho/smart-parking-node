@@ -1,0 +1,147 @@
+
+<% layout('base') %>
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<section role="main" class="content-body">
+  <header class="page-header">
+  	<h2>Home</h2>
+
+		<div class="right-wrapper pull-right">
+      <ol class="breadcrumbs">
+        <li>
+          <a href="/draw">
+            <i class="fa fa-car"></i>
+          </a>
+        </li>
+        <li>
+          <a href="/">
+            <i class="fa fa-home"></i>
+          </a>
+        </li>
+        <li><span>Home</span></li>
+      </ol>
+
+      <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+		</div>
+	</header>
+
+  <!-- [HERE!!!!] start: page -->
+  <div class="row">
+    <div class="col-md-8">
+      <canvas id="canvas" width="1280" height="720"></canvas>
+      <script>
+        var result_x1=result_y1=result_x2=result_y2=0;
+        window.onload = function(){
+
+          var mark = new Image();
+          //mark = document.getElementById('canvas');
+          //mark.src = "<%- img%>"; // -> 된다
+          mark.src = <%- JSON.stringify(img)%>; //-> 된다
+          //mark.src = "<%= img%>"; //-> 된다
+          //mark.src = <%= JSON.stringify(img)%>; //-> 안된다 -> " -> 요게 html 이스케이프되면서 &quot로 변하기떄문에 안됨!!
+
+          var canvas=document.getElementById('canvas');
+          var ctx = canvas.getContext('2d');
+          var canvasx = $(canvas).offset().left;
+          var canvasy = $(canvas).offset().top;
+          var first_mousex = first_mousey = 0;
+          var last_mousex = last_mousey = 0;
+          var x1 = y1 = x2 = y2 = 0;
+          var mousex = mousey = 0;
+          var mousedown = false;
+          //사진이 다 로딩되고나서 이미지를 그려야 화면에 나타남
+          mark.onload=function(){
+            ctx.drawImage(mark,0,0);
+          }
+          //Mousedown
+          $(canvas).on('mousedown', function(e) {
+            first_mousex=e.offsetX;
+            first_mousey=e.offsetY;
+            //first_mousex = parseInt(e.clientX-canvasx);
+            //first_mousey = parseInt(e.clientY-canvasy);
+            mousedown = true;
+          });
+
+          //Mouseup
+          $(canvas).on('mouseup', function(e) {
+            mousedown = false;
+            last_mousex=e.offsetX;
+            last_mousey=e.offsetY;
+            //last_mousex = parseInt(e.clientX-canvasx);
+            //last_mousey = parseInt(e.clientY-canvasy);
+          });
+
+          //Mousemove
+          $(canvas).on('mousemove', function(e) {
+            mousex = parseInt(e.clientX-canvasx);
+            mousey = parseInt(e.clientY-canvasy);
+            if(mousedown) {
+              ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+              ctx.drawImage(mark,0,0);
+              ctx.beginPath();
+              /*
+              var width = mousex-last_mousex;
+              var height = mousey-last_mousey;
+              ctx.rect(last_mousex,last_mousey,width,height);
+              */
+              var width = e.offsetX-first_mousex;
+              var height = e.offsetY-first_mousey;
+              ctx.rect(first_mousex*2,first_mousey*2,width*2,height*2);
+              var temp1=first_mousex*2;
+              var temp2=first_mousey*2;
+              var temp3=first_mousex*2+width*2;
+              var temp4=first_mousey*2+height*2;
+              x1 = Math.min(temp1,temp3);
+              x2 = Math.max(temp1,temp3);
+              y1 = Math.min(temp2,temp4);
+              y2 = Math.max(temp2,temp4);
+              ctx.strokeStyle = 'red';
+              ctx.lineWidth = 5;
+              ctx.stroke();
+            }
+            result_x1=x1;
+            result_y1=y1;
+            result_x2=x2;
+            result_y2=y2;
+            //Output
+            //$('#output').html('first: '+first_mousex+', '+first_mousey+'<br/>last: '+last_mousex+', '+last_mousey);
+            //positions
+            //$('#position').html('(x1,y1) / (x2,y2) : (' + x1 + ', ' + y1 + ') / (' + x2 + ', ' + y2 + ')');
+            //result value
+
+
+          });
+
+        }
+        var id=0;
+        function button_click(e){
+          id = e.id.slice(3);
+          e.style="border-style:inset";
+        }
+
+        function save_click(){
+          $('#test').html(id + '번칸 좌표 : (' + result_x1 + ', ' + result_y1 + ') ~ (' + result_x2 + ', ' + result_y2 + ')');
+          //save to DB
+
+        }
+      </script>
+    </div>
+    <div class="col-md-4">
+      <div>주차면 선택</div>
+      <input type="button" id=lot1 onclick="button_click(this);" value="주차면1" style="border-style:outset;"/>
+      <input type="button" id=lot2 onclick="button_click(this);" value="주차면2" style="border-style:outset;"/>
+      <input type="button" id=lot3 onclick="button_click(this);" value="주차면3" style="border-style:outset;"/>
+      <input type="button" id=lot4 onclick="button_click(this);" value="주차면4" style="border-style:outset;"/>
+      <input type="button" id=lot5 onclick="button_click(this);" value="주차면5" style="border-style:outset;"/>
+      <input type="button" id=lot6 onclick="button_click(this);" value="주차면6" style="border-style:outset;"/>
+      <input type="submit" id=save onclick="save_click()" value= "저장">
+      <!--<input type="button" id=save onclick="save_click()" value = "저장">-->
+    </div>
+    <div id="output"></div>
+    <div id="position"></div>
+    <div id="test"></div>
+  </div>
+
+  <!-- end: page -->
+</section>

@@ -1,0 +1,548 @@
+<% layout('/base') %>
+
+<!-- <link rel="stylesheet" href="assets/vendor/owl-carousel/owl.carousel.css" />
+<link rel="stylesheet" href="assets/vendor/owl-carousel/owl.theme.css" /> -->
+<!-- <script src="//code.jquery.com/jquery-3.2.1.min.js"></script> -->
+
+<style>
+    .background {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .parking_lot_icon {
+        position: absolute;
+        /* margin-left: auto;
+        margin-right: auto; */
+    }
+
+    .balloon {
+        display: inline-block;
+        position: relative;
+        background: #ccc;
+        height: 50px;
+        width: 120px;
+        margin: 0 auto 10px;
+    }
+
+    .balloon:after {
+        content: '';
+        position: absolute;
+        border-top: 10px solid #ccc;
+        border-right: 5px solid transparent;
+        border-left: 5px solid transparent;
+        bottom: -9px;
+        left: 5px;
+    }
+
+    tr:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .detail {
+        border: 2px solid #456879;
+        border-radius: 10px;
+        padding-top: 12px;
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .detail:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
+
+    .day {
+        border: 1px solid black;
+        border-radius: 5px;
+        width: 100px;
+        height: 100px;
+        margin: 5px;
+        text-align: center;
+    }
+
+    .day:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
+
+    .big {
+        font-size: 60px;
+        color: rgba(42, 112, 179, 1.0);
+    }
+</style>
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>서귀포</h2>
+
+        <div class="right-wrapper pull left">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li><span>서귀포</span></li>
+                <!-- <li></li> -->
+            </ol>
+
+            <!-- <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fas fa-chevron-left"></i></a> -->
+        </div>
+    </header>
+
+    <!-- Parking Tab -->
+    <div id="parking" style="margin-top:-70px;">
+        <!-- left: parking line, right: parking info -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- park name -->
+                <div class="col-md-6">
+                    <section class="panel panel-featured-left panel-featured-tertiary">
+                        <div class="panel-body" style="background-color:white;">
+                            <div class="widget-summary widget-summary-sm">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-tertiary">
+                                        <i class="fa fa-car"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">주차장명</h4>
+                                        <div class="info">
+                                            <strong class="amount">서홍동 공영주차장</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- park address -->
+                <div class="col-md-6">
+                    <section class="panel panel-featured-left panel-featured-tertiary">
+                        <div class="panel-body" style="background-color:white;">
+                            <div class="widget-summary widget-summary-sm">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-tertiary">
+                                        <i class="fa fa-map-marker"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">주차장 주소</h4>
+                                        <div class="info">
+                                            <strong class="amount">서귀포시 서홍동 장수로 80</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div id="refresh">
+                <div class="col-md-12"
+                    style="background-color:white; border:1px solid gray; border-radius:20px;">
+                    <!-- parking line -->
+                    <div class="col-md-7" style="text-align:center;">
+                        <h3 style="color:black; display: inline-block;">주차장 도면</h3>
+                        <div style="display: inline-block;">
+                            <button class="reload" style="margin-left:10px;">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                        <div style="position:relative; width:100%; height:auto; margin-top:0px;">
+                            <!-- <img style="position:relative; margin-left: auto; margin-right: auto; left: 0; right: 0; width:100%; height:100%; margin-bottom: 30px;;" draggable="false" src="images/web/parking_line_2.png"> -->
+                            <img style="position:relative; left: 0; right: 0; width:100%; height:auto;" draggable="false" src="images/web/parking_line_2.png">
+                            <!-- <canvas id="parking_canvas width=" -->
+                            <!-- parking(1~5) -->
+                            <img id="lot1" class="parking_lot_icon cam10" style="position:absolute; left: 64%; right:0; top: 3%; width:4.8%;"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot2" class="parking_lot_icon cam10" style="position:absolute; left: 69.5%; right:0; top: 3%; width:4.8%;"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot3" class="parking_lot_icon cam10" style="position:absolute; left: 75%; right:0; top: 3%; width:4.8%;"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot4" class="parking_lot_icon cam10" style="position:absolute; left: 80.6%; right:0; top: 3%; width:4.8%;"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot5" class="parking_lot_icon cam10" style="position:absolute; left: 86.2%; right:0; top: 3%;  width:4.7%;" src="images/web/lot_empty.png" />
+                            <!-- parking(6~9) -->
+                            <img id="lot6" class="parking_lot_icon cam6"
+                                style="position:absolute; left: 5.2%; right:0; top: 25%; width:4.5%; transform:rotate(90deg);;"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot7" class="parking_lot_icon cam6"
+                                style="position:absolute; left: 5.2%; right:0; top: 32%; width:4.5%; transform:rotate(90deg);"
+                                src="images/web/lot_use.png" />
+                            <img id="lot8" class="parking_lot_icon cam6"
+                                style="position:absolute; left: 5.2%; right:0; top: 39%; width:4.5%; transform:rotate(90deg);"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot9" class="parking_lot_icon cam6"
+                                style="position:absolute; left: 5.2%; right:0; top: 46.3%; width:4.5%; transform:rotate(90deg);"
+                                src="images/web/lot_use.png" />
+                            <!-- parking(10~19) -->
+                            <img id="lot10" class="parking_lot_icon cam6"
+                                style="position:absolute; left: 30.1%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot11" class="parking_lot_icon cam4"
+                                style="position:absolute; left: 35.7%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot12" class="parking_lot_icon cam4"
+                                style="position:absolute; left: 41.2%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot13" class="parking_lot_icon cam4"
+                                style="position:absolute; left: 46.7%; right:0; top: 40%; width:4.7%;" src="images/web/lot_use.png" />
+                            <img id="lot14" class="parking_lot_icon cam4"
+                                style="position:absolute; left: 52.2%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot15" class="parking_lot_icon cam4"
+                                style="position:absolute; left: 57.7%; right:0; top: 40%; width:4.7%;" src="images/web/lot_use.png" />
+                            <img id="lot16" class="parking_lot_icon cam5"
+                                style="position:absolute; left: 63.2%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot17" class="parking_lot_icon cam5"
+                                style="position:absolute; left: 68.7%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot18" class="parking_lot_icon cam5"
+                                style="position:absolute; left: 74.2%; right:0; top: 40%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot19" class="parking_lot_icon cam5"
+                                style="position:absolute; left: 79.7%; right:0; top: 40%; width:4.7%;" src="images/web/lot_use.png" />
+                            <!-- parking(20~29) -->
+                            <img id="lot20" class="parking_lot_icon cam6"
+                                style="position:absolute; left: 30%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot21" class="parking_lot_icon cam13"
+                                style="position:absolute; left: 35.7%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot22" class="parking_lot_icon cam13"
+                                style="position:absolute; left: 41.2%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot23" class="parking_lot_icon cam13"
+                                style="position:absolute; left: 46.7%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot24" class="parking_lot_icon cam13"
+                                style="position:absolute; left: 52.2%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot25" class="parking_lot_icon cam14"
+                                style="position:absolute; left: 57.7%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot26" class="parking_lot_icon cam14"
+                                style="position:absolute;left: 63.2%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot27" class="parking_lot_icon cam14"
+                                style="position:absolute; left: 68.7%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot28" class="parking_lot_icon cam14"
+                                style="position:absolute; left: 74.3%; right:0; top: 53%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot29" class="parking_lot_icon cam14"
+                                style="position:absolute; left: 79.8%; right:0; top: 53%; width:4.7%;" src="images/web/lot_use.png" />
+                            <!-- parking(30,31) -->
+                            <img id="lot30" class="parking_lot_icon cam11"
+                                style="position:absolute; left: 3.6%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot31" class="parking_lot_icon cam11"
+                                style="position:absolute; left: 9.2%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <!-- parking(32~42) -->
+                            <img id="lot32" class="parking_lot_icon cam7"
+                                style="position:absolute; left: 31.8%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot33" class="parking_lot_icon cam7"
+                                style="position:absolute; left: 37.3%; right:0; top: 87%; width:4.7%;" src="images/web/lot_use.png" />
+                            <img id="lot34" class="parking_lot_icon cam7"
+                                style="position:absolute; left: 42.8%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot35" class="parking_lot_icon cam8"
+                                style="position:absolute; left: 48.4%; right:0; top: 87%; width:4.7%;"
+                                src="images/web/lot_empty.png" />
+                            <img id="lot36" class="parking_lot_icon cam8"
+                                style="position:absolute; left: 53.9%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot37" class="parking_lot_icon cam8"
+                                style="position:absolute; left: 59.4%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot38" class="parking_lot_icon cam8"
+                                style="position:absolute; left: 65%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot39" class="parking_lot_icon cam9"
+                                style="position:absolute; left: 70.5%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot40" class="parking_lot_icon cam9"
+                                style="position:absolute; left: 76%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot41" class="parking_lot_icon cam9"
+                                style="position:absolute; left: 81.5%; right:0; top: 87%; width:4.7%;" src="images/web/lot_empty.png" />
+                            <img id="lot42" class="parking_lot_icon cam9"
+                                style="position:absolute; left: 87%; right:0; top: 87%; width:4.7%;" src="images/web/lot_use.png" />
+                        </div>
+                    </div>
+                    <!-- parking info -->
+                    <div class="col-md-5" style="text-align:center;">
+                        <h3 style="color:black;">주차장 정보</h3>
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <p style="font-size:x-large; margin-left:-40px;"><code>운영시간</code></p>
+                                <div style="margin-left:-50px; margin-right:-10px;">
+                                    <table class="type03">
+                                        <tr>
+                                            <th scope="row">평일</th>
+                                            <td>00:00 ~ 24:00</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">토요일</th>
+                                            <td>00:00 ~ 24:00</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">공휴일</th>
+                                            <td>00:00 ~ 24:00</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- charge info -->
+                            <div class="col-md-6">
+                                <p style="font-size:x-large; margin-right:-40px;"><code>요금정보</code></p>
+                                <div style="margin-left:-10px; margin-right:-50px;">
+                                    <table class="type03">
+                                        <tr>
+                                            <th scope="row">일반</th>
+                                            <td>1500원</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">경차</th>
+                                            <td>750원</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">전기차</th>
+                                            <td>750원</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- park numbers, park ratio -->
+                            <div class="col-md-12">
+                                <!-- park numbers -->
+                                <!-- <div class="col-md-6" style="margin-bottom:10px;">
+              <p style="font-size:x-large;"><code>주차면</code></p>
+              <div class="c100 p77 default center">
+                <span>30/42</span>
+                <div class="slice">
+                  <div class="bar"></div>
+                  <div class="fill"></div>
+                </div>
+              </div>
+            </div> -->
+                                <!-- park ratio -->
+                                <div class="col-md-12" style="margin-top:0px;">
+                                    <p style="font-size:x-large;"><code>주차가능대수</code></p>
+                                    <div id="available-percent" class="c100 p77 default center"
+                                        style="margin-top:20px;">
+                                        <span id="available-text">32대</span>
+                                        <div class="slice">
+                                            <div class="bar"></div>
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:20px;">
+                                        <p id="current-time"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12"
+                    style="background-color:white; border:1px solid gray; border-radius:20px; margin-top:20px;">
+                    <div class="col-md-7">
+                        <div class="col-md-12" style="text-align:center;">
+                            <h3 style="color:black;">주차율 그래프</h3>
+                            <!-- <div class="col-md-12" style="border:1px solid gray;"></div> -->
+                            <div id="chart_div" class="col-md-12" style=" margin-bottom:10px;">
+                                <canvas id="lineChart"></canvas>
+                            </div>
+                            <div>
+                                <input value="hour" name="time" type="radio" checked /><label style="margin:8px;">최근
+                                    1시간</label>
+                                <input value="six-hour" name="time" type="radio" /><label style="margin:8px;">최근
+                                    6시간</label>
+                                <input value="twelve-hour" name="time" type="radio" /><label style="margin:8px;">최근
+                                    12시간</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5" style="text-align:center; margin-top:120px;">
+                        <!-- park ratio -->
+                        <div class="col-md-6">
+                            <p style="font-size:x-large;"><code class="code" id="code1">입차대수</code></p>
+                            <!-- <p id="box1" class="arrow_box" style="margin-left:35px; z-index:3; display:none;">
+              주차면이 실제로 이용된 비율 또는 주차장에 주차차량이 존재한 시간 비율입니다.
+            </p> -->
+                            <div style="margin-top:40px;">
+                                <span class="big" id="enter_car_number">12대</span>
+                            </div>
+                        </div>
+                        <!-- park ratio -->
+                        <div class="col-md-6">
+                            <p style="font-size:x-large;"><code class="code" id="code2">출차대수</code></p>
+                            <!-- <p id="box2" class="arrow_box" style="margin-left:35px; z-index:3; display:none;">
+              단위 시간당 주차면에 대한 주차차량대수 입니다.
+            </p> -->
+                            <div style="margin-top:40px;">
+                                <span class="big" id="exit_car_number">3대</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div>
+        <span id="data">gg</span>
+    </div> -->
+
+    <script>
+        $(document).ready(function () {
+            var time = <%-JSON.stringify(time) %>;
+            var parking_graph = <%-JSON.stringify(parking_graph) %>;
+            var lot_use = <%-JSON.stringify(lot_use) %>;
+            var count = <%-JSON.stringify(count) %>;
+            console.log(lot_use)
+            $('#current-time').text('기준시간 : ' + time);
+            refreshInfo(lot_use);
+            refreshGraph(parking_graph);
+            countEnterExit(count);
+        });
+
+        $('input[name="time"]').change(function () {
+            $('input[name="time"]').each(function () {
+                var value = $(this).val();
+                var checked = $(this).prop('checked');
+                if (checked) {
+                    $.ajax({
+                        url: '/seogwipo',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {
+                            data: value
+                        },
+                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success: function (result) {
+                            if (result) {
+                                // console.log(result);
+                                refreshGraph(result.result);
+                                countEnterExit(result.count);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            console.log(XMLHttpRequest.responseText);
+                        }
+                    });
+                }
+            });
+        });
+
+        function refreshInfo(lot_use) {
+            // var empty_cnt = 0;
+            // for (var i = 0; i < lot_use.length; i++) {
+            //     // console.log('id: ' + lot_use[i].lot_id + ', use: ' + lot_use[i].lot_use);
+            //     if (lot_use[i].lot_id !== 0) {
+            //         if (lot_use[i].lot_use == 1) {
+            //             $('#lot' + i).attr("src", "images/web/lot_empty.png");
+            //             empty_cnt++;
+            //         } else if (lot_use[i].lot_use == 0) {
+            //             $('#lot' + i).attr("src", "images/web/lot_use.png");
+            //         }
+            //     }
+            // }
+            var empty_cnt = 0;
+            for(var i = 0; i < lot_use.length; i++){
+              temp_info = lot_use[i]
+              temp_cctv_id = temp_info.cctv_id
+              temp_lot_id = temp_info.lot_id
+              temp_lot_use = temp_info.lot_use
+              if (temp_lot_id == 0){
+                empty_cnt = temp_lot_use
+              }
+              // 우선 차있다고 그림처리
+              else if(temp_lot_id == -1){
+                console.log(temp_cctv_id)
+                $('.cam' + temp_cctv_id).attr("src", "images/web/lot_use.png");
+              }
+              else{
+                if (temp_lot_use == 0){
+                  $('#lot' + temp_lot_id).attr("src", "images/web/lot_use.png");
+                }
+                else{
+                  $('#lot' + temp_lot_id).attr("src", "images/web/lot_empty.png");
+                }
+              }
+            }
+
+            $('#available-text').text(empty_cnt + '대');
+            $('#available-percent').removeClass();
+            var class_str = 'c100 default center p' + Math.floor(empty_cnt / 42 * 100);
+            $('#available-percent').addClass(class_str);
+        }
+
+        function refreshGraph(result) {
+            // document.getElementById('lineChart').remove();
+            var chart = document.getElementById('lineChart');
+            chart.parentNode.removeChild(chart);
+            $("#chart_div").append('<canvas id="lineChart" style="cursor:default"></canvas>');
+            // document.getElementById('lineChart').style.width = "200px";
+            // document.getElementById('lineChart').style.height = "200px";
+
+            // console.log(result);
+            var parkingTime = new Array();
+            var parkingRatio = new Array();
+            for (var i = result.length - 1; i >= 0; i--) {
+                // console.log(result[i]);
+                var time = result[i].time.substring(11);
+                parkingTime.push(time);
+                var ratio = Math.floor(result[i].ratio);
+                parkingRatio.push(ratio);
+            }
+
+            var ctx = document.getElementById('lineChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: parkingTime,
+                    datasets: [{
+                        label: '주차율',
+                        // backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(38,160,168)',
+                        data: parkingRatio,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                maxTicksLimit: 10,
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                steps: 10,
+                                stepValue: 5,
+                                max: 110,
+                            }
+                        }]
+                    },
+                }
+            });
+        }
+
+        function countEnterExit(count){
+            // console.log(count);
+            var enter = 0;
+            var exit = 0;
+            for(var i=count.length-1; i>0; i--){
+                // console.log(count[i].lot_use);
+                // 1분 사이에 값이 더 커졌다면 출차
+                if(count[i].lot_use > count[i-1].lot_use){
+                    exit += (count[i].lot_use - count[i-1].lot_use);
+                } // 1분 사이에 값이 작아졌다면 입차
+                else if(count[i].lot_use < count[i-1].lot_use){
+                    enter += (count[i-1].lot_use - count[i].lot_use);
+                }
+            }
+            // console.log('enter: ' + enter + ' exit: ' + exit);
+            // 왠지 모르겠지만 출차대수와 입차대수가 바뀐 것 같다...
+            $('#enter_car_number').text(exit + '대');
+            $('#exit_car_number').text(enter + '대');
+        }
+    </script>
+
+    <script>
+        $('.reload').click(function () {
+            location.reload();
+        });
+    </script>
+
+</section>

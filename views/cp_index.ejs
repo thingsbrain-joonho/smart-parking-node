@@ -1,0 +1,117 @@
+
+<% layout('base') %>
+
+<section role="main" class="content-body">
+  <header class="page-header">
+  	<h2>Home</h2>
+
+		<div class="right-wrapper pull-right">
+      <ol class="breadcrumbs">
+        <li>
+          <a href="/draw">
+            <i class="fa fa-car"></i>
+          </a>
+        </li>
+        <li>
+          <a href="/">
+            <i class="fa fa-home"></i>
+          </a>
+        </li>
+        <li><span>Home</span></li>
+      </ol>
+
+      <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+		</div>
+	</header>
+
+  <div class="row">
+    <div class="col-md-12" style="text-align:right;">
+      <button type="button" class="mb-xs mt-xs mr-xs btn btn-default" onclick="location.href='/park/add'">
+        <i class="fa fa-plus-square"></i> 주차장 추가
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel-group" id="accordion2">
+        <div class="panel panel-accordion panel-accordion-primary">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2One">
+                <i class="fa fa-star"></i> 필터링
+              </a>
+            </h4>
+          </div>
+          <div id="collapse2One" class="accordion-body collapse">
+            <div class="panel-body">
+              <form class="form-horizontal form-bordered" method="get">
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="inputSuccess">지역</label>
+                  <div class="col-md-6">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="option1"> 제주시
+                    </label>
+                    <label class="checkbox-inline">
+                      <input type="checkbox" value="option2"> 서귀포시
+                    </label>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-md-3">
+      <section class="panel panel-featured panel-featured-primary">
+        <header class="panel-heading">
+          <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+            <a href="#" class="fa fa-times"></a>
+          </div>
+
+          <h2 class="panel-title">사무실 앞 주차장</h2>
+          <p class="panel-subtitle">제주시 복지로3길 1-4</p>
+        </header>
+        <div class="panel-body">
+          <code>운영중</code>
+          <div class="row">
+            <div class="col-md-6">
+              hihihihihihi
+            </div>
+            <div class="col-md-6">
+              hihihihihihi
+            </div>
+          </div>
+          <div class="progress progress-striped light active m-md">
+            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+              주차율 60%
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer" style="text-align:right;">
+          <button class="btn btn-primary" onclick="location.href='/park'">이동</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="row" style="text-align:center;">
+    <div class="col-md-12">
+      <div class="btn-group">
+          <button type="button" class="btn btn-primary">1</button>
+          <button type="button" class="btn btn-default">2</button>
+          <button type="button" class="btn btn-default">3</button>
+          <button type="button" class="btn btn-default">4</button>
+          <button type="button" class="btn btn-default">5</button>
+      </div>
+    </div>
+  </div>
+
+</section>

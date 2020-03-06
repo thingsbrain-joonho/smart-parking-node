@@ -1,0 +1,325 @@
+
+<% layout('base') %>
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<section role="main" class="content-body">
+  <header class="page-header">
+  	<h2>Home</h2>
+
+		<div class="right-wrapper pull-right">
+      <ol class="breadcrumbs">
+        <li>
+          <a href="/draw">
+            <i class="fa fa-car"></i>
+          </a>
+        </li>
+        <li>
+          <a href="/">
+            <i class="fa fa-home"></i>
+          </a>
+        </li>
+        <li><span>Home</span></li>
+      </ol>
+
+      <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+		</div>
+	</header>
+
+  <!-- [HERE!!!!] start: page -->
+  <div class="row">
+    <div class="col-md-8">
+      <canvas id="canvas" width="1280" height="720"></canvas>
+      <script>
+        var canvas,ctx;
+        var result_x1=result_y1=result_x2=result_y2=0;
+        var mark=new Image();
+        var lines=[];
+        var points=[];
+        var rectangle_points={};
+        var id=0;
+        window.onload = function(){
+
+          //mark.src = "<%- img%>"; // -> 된다
+          mark.src = <%- JSON.stringify(img)%>; //-> 된다
+          //mark.src = "<%= img%>"; //-> 된다
+          //mark.src = <%= JSON.stringify(img)%>; //-> 안된다 -> " -> 요게 html 이스케이프되면서 &quot로 변하기떄문에 안됨!!
+
+          canvas=document.getElementById('canvas');
+          ctx = canvas.getContext('2d');
+          var canvasx = $(canvas).offset().left;
+          var canvasy = $(canvas).offset().top;
+          var first_mousex = first_mousey = 0;
+          var last_mousex = last_mousey = 0;
+          var x1 = y1 = x2 = y2 = 0;
+          var mousex = mousey = 0;
+          var mousedown = false;
+          //사진이 다 로딩되고나서 이미지를 그려야 화면에 나타남
+          mark.onload=function(){
+            ctx.drawImage(mark,0,0);
+          }
+
+          var temp1,temp2,temp3,temp4=0;
+          var line_x1,liney1,line_x2,line_y2=0;
+
+          //Mousedown
+          $(canvas).on('mousedown', function(e) {
+            first_mousex=e.offsetX;
+            first_mousey=e.offsetY;
+            //first_mousex = parseInt(e.clientX-canvasx);
+            //first_mousey = parseInt(e.clientY-canvasy);
+            mousedown = true;
+          });
+
+          //Mouseup
+          $(canvas).on('mouseup', function(e) {
+            mousedown = false;
+            last_mousex=e.offsetX;
+            last_mousey=e.offsetY;
+
+            var position={'x1' : line_x1, 'y1' : line_y1, 'x2' : line_x2, 'y2' : line_y2};
+            lines.push(position);
+
+            //last_mousex = parseInt(e.clientX-canvasx);
+            //last_mousey = parseInt(e.clientY-canvasy);
+          });
+
+          //Mousemove
+          $(canvas).on('mousemove', function(e) {
+            mousex = parseInt(e.clientX-canvasx);
+            mousey = parseInt(e.clientY-canvasy);
+            if(mousedown) {
+              //ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+              ctx.drawImage(mark,0,0);
+              ctx.beginPath();
+              /*
+              var width = mousex-last_mousex;
+              var height = mousey-last_mousey;
+              ctx.rect(last_mousex,last_mousey,width,height);
+              */
+              var width = e.offsetX-first_mousex;
+              var height = e.offsetY-first_mousey;
+              //ctx.rect(first_mousex*2,first_mousey*2,width*2,height*2);
+
+             for(var i=0; i<lines.length; i++){
+               ctx.moveTo(lines[i].x1, lines[i].y1);
+               ctx.lineTo(lines[i].x2, lines[i].y2);
+             }
+
+              //직선 그리기
+              ctx.moveTo(first_mousex*2,first_mousey*2);
+              ctx.lineTo(first_mousex*2 + width*2, first_mousey*2 + height*2);
+
+              temp1=first_mousex*2;
+              temp2=first_mousey*2;
+              temp3=first_mousex*2+width*2;
+              temp4=first_mousey*2+height*2;
+
+              line_x1=temp1;
+              line_y1=temp2;
+              line_x2=temp3;
+              line_y2=temp4;
+
+              x1 = Math.min(temp1,temp3);
+              x2 = Math.max(temp1,temp3);
+              y1 = Math.min(temp2,temp4);
+              y2 = Math.max(temp2,temp4);
+              ctx.strokeStyle = 'red';
+              ctx.lineWidth = 5;
+              ctx.stroke();
+
+              result_x1=x1;
+              result_y1=y1;
+              result_x2=x2;
+              result_y2=y2;
+
+            }
+
+            //Output
+            //$('#output').html('first: '+first_mousex+', '+first_mousey+'<br/>last: '+last_mousex+', '+last_mousey);
+            //positions
+            //$('#position').html('(x1,y1) / (x2,y2) : (' + x1 + ', ' + y1 + ') / (' + x2 + ', ' + y2 + ')');
+            //result value
+
+
+          });
+
+          $('#save').click(function(){
+            detect_point(lines, function(){
+              var jsonEncode = JSON.stringify(points);
+              var jsonDecode = JSON.parse(jsonEncode);
+              $.ajax({
+                url : 'http://definetestserver.iptime.org:8083/draw',
+                type : 'post',
+                traditional : true,
+                data : {
+                  'cross_points' : jsonDecode,
+                  'rec_points' : JSON.stringify(rectangle_points),
+                  'id' : id
+                },
+                //dataType : 'json',
+                //contentType : 'application/json; charset=UTF-8',
+                success : function(result){
+                  $('#result').html(result['msg']);
+                }
+              });
+            });
+          });
+
+
+          function detect_point(lines, callback){
+            for(var i=0; i<lines.length - 1; i++){
+              for(var j=i+1; j<lines.length; j++){
+                var line1 = make_line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2);
+                var line2 = make_line(lines[j].x1, lines[j].y1, lines[j].x2, lines[j].y2);
+
+                //두 직선의 기울기가 같은경우 교점 존재 할 수 없다.
+                if (line1.inclination == line2.inclination){
+                  break;
+                }
+                //두 직선이 일치하는 경우
+                if(line1.inclination == line2.inclination && line1.interception == line2.interception){
+                  break;
+                }
+                //교점이 한개인 경우
+                a1 = line1.inclination;
+                a2 = line2.inclination;
+                b1 = line1.interception;
+                b2 = line2.interception;
+                $('#line1').html('직선 1 : y=' + a1 + 'x+' + b1);
+                $('#line2').html('직선 2 : y=' + a2 + 'x+' + b2);
+                //교차점 좌표
+                var point={
+                  x : parseInt(-((b1-b2)/(a1-a2))),
+                  y : parseInt(a1*(-((b1-b2)/(a1-a2))) + b1)
+                };
+                //사각형 이루는 점이 아닐떄
+                //line1의 범위
+                line1_minX_tmp = Math.min(lines[i].x1, lines[i].x2);
+                line1_maxX_tmp = Math.max(lines[i].x1, lines[i].x2);
+                line1_minY_tmp = Math.min(lines[i].y1, lines[i].y2);
+                line1_maxY_tmp = Math.max(lines[i].y1, lines[i].y2);
+
+                //line2의 범위
+                line2_minX_tmp = Math.min(lines[j].x1, lines[j].x2);
+                line2_maxX_tmp = Math.max(lines[j].x1, lines[j].x2);
+                line2_minY_tmp = Math.min(lines[j].y1, lines[j].y2);
+                line2_maxY_tmp = Math.max(lines[j].y1, lines[j].y2);
+                $('#xy').html('X : (' + line1_minX_tmp + ', ' + line1_maxX_tmp + ') / Y : (' + line1_minY_tmp + ', '+ line1_maxY_tmp + ')');
+                if ((line1_minX_tmp<=point.x && point.x<=line1_maxX_tmp) && (line1_minY_tmp<=point.y && point.y<=line1_maxY_tmp)){
+                  if ((line2_minX_tmp<=point.x && point.x<=line2_maxX_tmp) && (line2_minY_tmp<=point.y && point.y<=line2_maxY_tmp)){
+                    points.push(JSON.stringify(point));
+                  }
+                }
+              }
+            }
+            var str_point="";
+            for(var i=0; i<points.length; i++){
+              var tmp_point = JSON.parse(points[i]);
+              str_point = str_point + '(' + tmp_point.x + ',' + tmp_point.y + ')' + '\n';
+            }
+
+            $('#cross').html('교차점 좌표 : ' + str_point);
+            //교점 구한 좌표들 이용해서 사각형 추출
+            rectangle_points = make_rectangle();
+            $('#rectangle').html('사각형 좌표 : (' + rectangle_points.rec_x1 + ', ' + rectangle_points.rec_y1 + ') ~ (' + rectangle_points.rec_x2 + ', ' + rectangle_points.rec_y2 + ')');
+            callback();
+          }
+
+          function make_line(x1,y1,x2,y2){
+            var inclination_val=0;
+            //기울기가 0인경우
+            if ((x1-x2)/(y1-y2) == 0){
+              inclination_val=0;
+            }
+            else{
+              inclination_val = (y1-y2) / (x1-x2);  //기울기
+            }
+            //절편
+            var interception_val = y1 - ((y1-y2)*x1)/(x1-x2);
+            var ret_line={
+              inclination : inclination_val,
+              interception : interception_val
+            }
+            return ret_line;
+          }
+
+          function make_rectangle(){
+            var _minX = _minY=10000;
+            var _maxX = _maxY=0;
+            for(var i=0; i<points.length; i++){
+              var _point = JSON.parse(points[i]);
+              if (_minX > _point.x){
+                _minX = _point.x;
+              }
+              if(_minY > _point.y){
+                _minY = _point.y;
+              }
+              if(_maxX < _point.x){
+                _maxX = _point.x;
+              }
+              if(_maxY < _point.y){
+                _maxY = _point.y;
+              }
+            }
+            return {
+              "rec_x1" : _minX,
+              "rec_y1" : _minY,
+              "rec_x2" : _maxX,
+              "rec_y2" : _maxY
+            };
+          }
+        }
+
+
+        function clearCanvas(){
+          ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+          ctx.drawImage(mark,0,0);
+          lines.length=0;
+          points.length=0;
+        }
+        function button_click(e){
+          //다른 버튼 style 해제
+          id = e.id.slice(3);
+          var cnt = <%= pk_cnt %>;
+          var str_tmp='';
+          for(var i=1; i<=cnt; i++){
+            str_tmp='';
+            str_tmp=str_tmp + '#lot' + i;
+            $(str_tmp).css("border-style", "outset");
+          }
+          e.style="border-style:inset";
+          ctx.clearRect(0,0,canvas.width,canvas.height); //clear canvas
+          ctx.drawImage(mark,0,0);
+          lines.length=0;
+          points.length=0;
+        }
+      
+      </script>
+    </div>
+    <div class="col-md-4">
+      <div>주차면 선택</div>
+      <input type="button" id=lot1 onclick="button_click(this);" value="주차면1" />
+      <input type="button" id=lot2 onclick="button_click(this);" value="주차면2" />
+      <input type="button" id=lot3 onclick="button_click(this);" value="주차면3" />
+      <input type="button" id=lot4 onclick="button_click(this);" value="주차면4" />
+      <input type="button" id=lot5 onclick="button_click(this);" value="주차면5" />
+      <input type="button" id=lot6 onclick="button_click(this);" value="주차면6" />
+      <input type="submit" id=save value= "저장"/>
+      <input type="button" id=clear onclick="clearCanvas();" value="초기화"/>
+
+      <!--<input type="button" id=save onclick="save_click()" value = "저장">-->
+    </div>
+    <div id="output"></div>
+    <div id="position"></div>
+    <div id="test"></div>
+    <div id="line1"></div>
+    <div id="line2"></div>
+    <div id="xy"></div>
+    <div id="cross"></div>
+    <div id="rectangle"></div>
+    <div id="result"></div>
+  </div>
+
+  <!-- end: page -->
+</section>

@@ -1,0 +1,270 @@
+<html class="fixed">
+
+<head>
+
+	<!-- Basic -->
+	<meta charset="UTF-8">
+
+	<meta name="keywords" content="HTML5 Admin Template" />
+	<meta name="description" content="Porto Admin - Responsive HTML5 Template">
+	<meta name="author" content="okler.net">
+
+	<!-- Mobile Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+	<!-- Web Fonts  -->
+	<!-- <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css"> -->
+
+	<!-- Vendor CSS -->
+	<link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.css" />
+	<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.css" />
+	<link rel="stylesheet" href="assets/vendor/magnific-popup/magnific-popup.css" />
+	<link rel="stylesheet" href="assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+
+	<!-- Theme CSS -->
+	<link rel="stylesheet" href="assets/stylesheets/theme.css" />
+
+	<!-- Skin CSS -->
+	<link rel="stylesheet" href="assets/stylesheets/skins/default.css" />
+
+	<!-- Theme Custom CSS -->
+	<link rel="stylesheet" href="assets/stylesheets/theme-custom.css">
+
+	<!-- Head Libs -->
+	<script src="assets/vendor/modernizr/modernizr.js"></script>
+
+
+	<style>
+		.signup {
+			margin: 0 auto;
+			padding: 5px;
+			border: 1px gray solid;
+			border-radius: 5px;
+			width: 40%;
+			background-color: rgba(0, 125, 197, 1.0);
+		}
+
+		.signup:hover {
+			cursor: pointer;
+			background-color: rgba(0, 125, 197, 0.8);
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- start: page -->
+	<section class="body-sign">
+		<div class="center-sign">
+
+			<div class="panel panel-sign">
+				<div class="panel-title-sign mt-xl text-right">
+					<h2 id="signin-text" class="title text-uppercase text-bold m-none"><i class="fa fa-user mr-xs"></i> Sign In</h2>
+				</div>
+				<div class="panel-body">
+					<form id="login_form" action="/login" method="post">
+						<div id="div-name" class="form-group mb-lg" style="display:none;">
+							<label>이름</label>
+							<div class="input-group input-group-icon">
+								<input id="name" name="name" type="text" class="form-control input-lg" />
+								<span class="input-group-addon">
+									<span class="icon icon-lg">
+										<i class="fa fa-smile-o" style="margin-top:5px;"></i>
+									</span>
+								</span>
+							</div>
+						</div>
+
+						<div class="form-group mb-lg">
+							<label>아이디</label>
+							<div class="input-group input-group-icon">
+								<input id="id" name="id" type="text" class="form-control input-lg" />
+								<span class="input-group-addon">
+									<span class="icon icon-lg">
+										<i class="fa fa-user" style="margin-top:5px;"></i>
+									</span>
+								</span>
+							</div>
+						</div>
+
+						<div id="div-phone" class="form-group mb-lg" style="display:none;">
+							<div class="clearfix">
+								<label class="pull-left">연락처 (숫자만 입력 가능합니다)</label>
+							</div>
+							<div class="input-group input-group-icon">
+								<input id="phone" name="phone" type="text" class="form-control input-lg" numberOnly />
+								<span class="input-group-addon">
+									<span class="icon icon-lg">
+										<i class="fa fa-phone" style="margin-top:5px;"></i>
+									</span>
+								</span>
+							</div>
+						</div>
+
+						<div id="div-pw" class="form-group mb-lg">
+							<div class="clearfix">
+								<label class="pull-left">비밀번호</label>
+							</div>
+							<div class="input-group input-group-icon">
+								<input id="input-pw" name="pw" type="password" class="form-control input-lg" style="ime-mode:inactive;" />
+								<span class="input-group-addon">
+									<span class="icon icon-lg">
+										<i class="fa fa-lock" style="margin-top:5px;"></i>
+									</span>
+								</span>
+							</div>
+						</div>
+
+						<div id="conform-pw" class="form-group mb-lg" style="display:none;">
+							<div class="clearfix">
+								<label class="pull-left">비밀번호 확인</label>
+							</div>
+							<div class="input-group input-group-icon">
+								<input id="input-cpw" name="cpw" type="password" class="form-control input-lg" />
+								<span class="input-group-addon">
+									<span class="icon icon-lg">
+										<i class="fa fa-lock" style="margin-top:5px;"></i>
+									</span>
+								</span>
+							</div>
+						</div>
+
+						<div>
+                            <!-- <p>메세지</p> -->
+							<p id="result-text" style="color:red;"><%= result %></p>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-3">
+								<div id="cancel-btn" class="btn btn-danger invisible">
+									<span id="cancel-text">취소</span>
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="signup" style="width:80px;">
+									<p class="text-center" style="color:white; font-size:15px;">회원가입</p>
+								</div>
+							</div>
+							<div class="col-sm-7 text-right">
+								<button type="submit" class="btn btn-primary hidden-xs" style="font-size:20px; width:200px;">
+									<span id="submit-text">로그인</span>
+								</button>
+								<!-- <button type="submit" class="btn btn-primary btn-block btn-lg visible-xs mt-lg">로그인</button> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<p class="text-center text-muted mt-md mb-md">&copy; Copyright 2018. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+		</div>
+	</section>
+	<!-- end: page -->
+	<!-- Vendor -->
+	<script src="assets/vendor/jquery/jquery.js"></script>
+	<script src="assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+	<script src="assets/vendor/bootstrap/js/bootstrap.js"></script>
+	<script src="assets/vendor/nanoscroller/nanoscroller.js"></script>
+	<script src="assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+	<script src="assets/vendor/magnific-popup/magnific-popup.js"></script>
+	<script src="assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+	<!-- Theme Base, Components and Settings -->
+	<script src="assets/javascripts/theme.js"></script>
+
+	<!-- Theme Custom -->
+	<script src="assets/javascripts/theme.custom.js"></script>
+
+	<!-- Theme Initialization Files -->
+	<script src="assets/javascripts/theme.init.js"></script>
+
+</body>
+
+</html>
+
+<script>
+    // if(response == "unauthenticated"){
+    //     // alert("아이디 혹은 비밀번호가 맞지 않습니다.");
+    // }
+
+	$(document).ready(function() {
+        // 3초 후에 안내메세지 사라지도록 설계
+        setTimeout(function(){
+            $('#result-text').text('');
+        },3000);
+	});
+
+	$('.signup').click(function() {
+        // 결과값 초기화
+        $('#result-text').text('');
+        // 입력한 정보 초기화
+        $('#name').val('');
+        $('#id').val('');
+        $('#phone').val('');
+        $('#input-pw').val('');
+        $('#input-cpw').val('');
+
+		$('#signin-text').html('<i class="fa fa-user mr-xs"></i>sign up');
+		$('#div-name').attr('style', 'display:block');
+		$('#div-phone').attr('style', 'display:block');
+		$('#conform-pw').attr('style', 'display:block');
+		$('#submit-text').text('회원가입');
+		$('#cancel-btn').removeClass('invisible');
+		$('.signup').addClass('invisible');
+
+	});
+
+	$('#cancel-btn').click(function() {
+		$('#signin-text').html('<i class="fa fa-user mr-xs"></i>sign in');
+		$('#cancel-btn').addClass('invisible');
+		$('#div-name').attr('style', 'display:none');
+		$('#div-phone').attr('style', 'display:none');
+		$('#conform-pw').attr('style', 'display:none');
+		$('#submit-text').text('로그인');
+		$('.signup').removeClass('invisible');
+        // 입력한 정보 초기화
+        $('#name').val('');
+        $('#id').val('');
+        $('#phone').val('');
+        $('#input-pw').val('');
+        $('#input-cpw').val('');
+
+        // 결과값 초기화
+        $('#result-text').text('');
+	});
+</script>
+
+<script>
+    $("input:text[numberOnly]").on("keyup", function () {
+        $(this).val($(this).val().replace(/[^0-9]/g, ""));
+    });
+
+	// console.log($('#div-name').css('display'));
+
+	$('#login_form').submit(function(event) {
+		if ($('#div-name').css('display') == "block") {
+			// var valid = false;
+			if ($('input[name=id]').val() == '') {
+				$('#result-text').text('아이디를 입력하세요');
+				return false;
+			}
+			if ($('input[name=name]').val() == '') {
+				$('#result-text').text('이름을 입력하세요');
+				return false;
+			}
+			if ($('input[name=phone]').val() == '') {
+				$('#result-text').text('전화번호를 입력하세요');
+				return false;
+			}
+			if ($('input[name=pw]').val() == '') {
+				$('#result-text').text('비밀번호를 입력하세요');
+				return false;
+			}
+			if ($('input[name=cpw]').val() != $('input[name=pw]').val()) {
+				$('#result-text').text('비밀번호를 확인하세요');
+				return false;
+			}
+			return true;
+		}
+	});
+</script>

@@ -1,0 +1,755 @@
+<% layout('/base') %>
+<link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+
+<style>
+    h1 {
+        color: black;
+    }
+
+    h2 {
+        color: black;
+    }
+
+    h3 {
+        color: black;
+    }
+
+    .date {
+        width: 100%;
+        height: 100%;
+        /* margin-bottom: 20px; */
+        text-align: center;
+        font-size: x-large;
+        color: black;
+        border: 1px solid gray;
+        border-radius: 5px;
+        background-color: white;
+    }
+
+    .white {
+
+        border: 1px solid gray;
+        border-radius: 5px;
+        background-color: white;
+    }
+
+    .big {
+        font-size: 60px;
+        /* color: rgba(42, 112, 179, 1.0); */
+        color: rgba(120, 189, 240, 1.0);
+    }
+
+    .pink {
+        color: rgba(255, 146, 168, 1.0);
+    }
+
+    .purple {
+        color: rgb(229, 82, 248, 0.9);
+    }
+
+    .light_purple {
+        color: rgba(252, 226, 255, 0.9);
+    }
+
+    .black {
+        color: black;
+    }
+
+    .black_bold {
+        color: black;
+        font-weight: bold;
+    }
+
+    .white_text {
+        color: white;
+    }
+
+    .btn_csv {
+        background-color: DodgerBlue;
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        cursor: pointer;
+        font-size: 20px;
+        border-radius: 5px;
+    }
+
+    /* Darker background on mouse-over */
+    .btn_csv:hover {
+        background-color: RoyalBlue;
+    }
+
+    /* input[type=text]::-ms-clear {
+		    display: none;
+	  } */
+
+    .date::-ms-clear{
+        display:none;
+    }
+</style>
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>통계</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>통계</span></li>
+            </ol>
+
+            <!-- <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a> -->
+        </div>
+    </header>
+
+    <div class="loading-layer"></div>
+    <!-- [HERE!!!!] start: page -->
+    <div class="row" style="margin-top:-60px;">
+        <div class="col-md-12" style="margin-bottom: 20px;">
+            <div class="col-md-3" style="text-align:center;">
+                <div id="dateSelect" style="height:150px; display: block;">
+                    <input class="date" type="textarea" name="daterange" value="날짜를 선택하세요" />
+                </div>
+                <div id="dateText" class="date" style="height:150px; padding-top:35px; display:none;">
+                    <p id="startDate"></p>
+                    <p id="endDate"></p>
+                    <p style="font-size:small; color:gray;">재설정하려면 더블클릭</p>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white" style="height:150px;">
+                    <div style="margin-top:30px;">
+                        <h4>총 주차 이용대수</h4>
+                        <h2 id="total-count"></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white" style="height:150px;">
+                    <div style="margin-top:30px;">
+                        <h4>일반차량 이용대수</h4>
+                        <h2 id="normal-count"></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white" style="height:150px;">
+                    <div style="margin-top:30px;">
+                        <h4>경차 이용대수</h4>
+                        <h2 id="light-count"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="white" style="height:30%;">
+                    <div style="margin:10px;">
+                        <h4>평균주차시간(분)</h4>
+                    </div>
+                    <!-- <div class="chartWrapper">
+                        <div class="chartAreaWrapper">
+                            <canvas id="average-time" style="border:0px solid white; height:90%;"></canvas>
+                        </div>
+                    </div> -->
+                    <div style="width:100%; overflow-x:auto; overflow-y:hidden;">
+                        <div id="canvasWrapper" style="width:1000px; height:265px;">
+                            <canvas id="average-time" style="border:0px solid white;" height="265" width="0"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white">
+                    <div style="margin:20px;">
+                        <h4>일반차 평균주차시간</h4>
+                    </div>
+                    <div>
+                        <div style="margin-top:50px; margin-bottom:60px;">
+                            <text class="big" id="normal_time_hour"></text><br>
+                            <text class="big" id="normal_time_minute"></text>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white">
+                    <div style="margin:20px;">
+                        <h4>경차 평균주차시간</h4>
+                    </div>
+                    <div>
+                        <div style="margin-top:50px; margin-bottom:60px;">
+                            <text class="big pink" id="light_time_hour"></text><br>
+                            <text class="big pink" id="light_time_minute"></text>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="margin-top:20px;">
+            <div class="col-md-6">
+                <div class="white" id="canvasWrapper2">
+                    <canvas id="time-graph" style="border:0px solid white;"></canvas>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white">
+                    <div style="margin:10px;">
+                        <h4 style="display: inline-block;">주차효율</h4>
+                        <h5 class="black_bold" style="float:right;">주간</h5>
+                    </div>
+                    <div style="margin-top:50px; margin-bottom:60px;">
+                        <span class="big purple" id="efficiency_day"></span>
+                    </div>
+                    <div style="background-color: gray;">
+                        <h5 class="black_bold" style="float:right; margin-right:10px;">야간</h5>
+                        <div style="padding-top:60px; padding-bottom:60px;">
+                            <span class="big light_purple" id="efficiency_night"></span>
+                        </div>
+                    </div>
+                    <!-- <div>
+                        <div class="big default center c100 p40">
+                            <span>70%</span>
+                            <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div id="container"></div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align:center;">
+                <div class="white">
+                    <div style="margin:10px;">
+                        <h4 style="display: inline-block;">회전율</h4>
+                        <h5 class="black_bold" style="float:right;">주간</h5>
+                    </div>
+                    <div style="margin-top:50px; margin-bottom:60px;">
+                        <span class="big black" id="rotation_day"></span>
+                    </div>
+                    <div style="background-color: gray;">
+                        <h5 class="black_bold" style="float:right; margin-right:10px;">야간</h5>
+                        <div style="padding-top:60px; padding-bottom:60px;">
+                            <span class="big white_text" id="rotation_night"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top:30px;">
+            <div class="col-md-12" style="text-align:center;">
+                <div class="col-md-3" style="float:right;">
+                    <button class="btn_csv" type="button" onclick="exportTableToCsv('datatable', '서홍동 공영주차장 데이터')">
+                        <i class="fa fa-download"></i> 데이터 추출하기
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table id="datatable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>총 주차 이용대수</th>
+                    <th>일반차 이용대수</th>
+                    <th>경차 이용대수</th>
+                    <th>평균주차시간</th>
+                    <th>일반차 평균주차시간</th>
+                    <th>경차 평균주차시간</th>
+                    <th>주차효율(주간)</th>
+                    <th>주차효율(야간)</th>
+                    <th>회전율(주간)</th>
+                    <th>회전율(야간)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td>총</td>
+                    <td id="car_total_td"></td>
+                    <td id="normal_total_td"></td>
+                    <td id="light_total_td"></td>
+                    <td id="avg_td" colspan="3"></td>
+                    <td id="efficiency_td" colspan="2"></td>
+                    <td id="rotation_td" colspan="2"></td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+<script>
+    function dateParser(date) {
+        var dateText;
+        var yyyy = date.getFullYear();
+        var mm = date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1); // getMonth() is zero-based
+        var dd = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        var hh = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+        var min = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+        var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+        dateText = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + min + ':' + ss;
+
+        return dateText;
+    }
+
+    $('input[name="daterange"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+    // 날짜 확정
+    $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+        $('#startDate').text(picker.startDate.format('YYYY/MM/DD'));
+        $('#endDate').text(' ~ ' + picker.endDate.format('YYYY/MM/DD'));
+        $('#dateText').css('display', 'block');
+        $('#dateSelect').css('display', 'none');
+
+        var today = new Date();
+        today = dateParser(today);
+
+        var startDate = picker.startDate.format('YYYY-MM-DD') + ' 00:00:00';
+        var eDate = picker.endDate.format('YYYY-MM-DD') + '00:01:00';
+        var endDate = new Date(parseInt(eDate.substring(0, 4), 10),
+            parseInt(eDate.substring(5, 7), 10) - 1,
+            parseInt(eDate.substring(8, 10), 10) + 1,
+            parseInt(eDate.substring(11, 13), 10),
+            parseInt(eDate.substring(14, 16), 10));
+        var endDate2;
+        endDate2 = dateParser(endDate);
+
+        console.log('start: ' + startDate + ', end: ' + endDate2);
+
+        if (endDate2 >= today) {
+          console.log('false');
+            Swal.fire({
+                type: 'error',
+                title: '당일 혹은 그 이후 날짜를 포함할 수 없습니다',
+                width: '500px',
+            });
+        } else {
+            $(".loading-layer").attr('style', 'visibility:visible;');
+            // post 방식으로 서버에 해당하는 날짜 쿼리문 날리도록 설계
+            $.ajax({
+                url: '',
+                datatype: 'json',
+                type: 'POST',
+                data: {
+                    startDate: startDate,
+                    endDate: endDate2,
+                },
+                success: function (result) {
+                    $("#datatable").find("tr:gt(0)").remove();
+                    if (result.overallInfo.length == 0) {
+                        Swal.fire({
+                            type: 'error',
+                            title: '해당 날짜에 정보가 없습니다',
+                            width: '500px',
+                        });
+                        clearAllText();
+                        $(".loading-layer").attr('style', 'visibility:hidden');
+                    } else {
+                        // console.log(result.overallInfo);
+                        calculateOverallInfo(result.overallInfo);
+                        drawHourlyGraph(result.hourlyGraphInfo);
+                        calculateRotation(result.counting);
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        type: 'error',
+                        title: '잠시 후 다시 시도해주세요',
+                        width: '500px',
+                    });
+                }
+            });
+        }
+    });
+    // 취소버튼
+    $('input[name="daterange"]').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+        $('input[name="daterange"]').val('날짜를 선택하세요');
+    });
+    $('#dateText').click(function () {
+        $('#dateText').css('display', 'none');
+        $('#dateSelect').css('display', 'block');
+        // $('.date').val('날짜를 선택하세요');
+    });
+
+    var row;
+    var dateIndex;
+    // 총 주차 이용대수를 계산한다 (일반차, 경차의 출입을 기준으로), 또한 일반차, 경차의 평균주차시간을 계산한다
+    function calculateOverallInfo(count) {
+        var dateLabel = [];
+        // 주간
+        var normalCarCount = 0;
+        var lightCarCount = 0; // 경차 lot_id는 1,2,3,4,5,10,20
+        var lotUseArray = new Array(42); // lot_use를 저장하기 위한 배열
+        var lotCountArray = new Array(42); // 각 주차면의 주차대수를 세기 위한 배열
+        var lotTimeArray = new Array(42); // time을 저장하기 위한 배열
+        var lotAvgTimeArray = new Array(42); // 평균주차시간을 저장하기 위한 배열
+        var dateNormalCarCount = new Array(); // 날짜별 일반차 입차대수
+        var dateLightCarCount = new Array(); // 날짜별 경차 입차대수
+        var dateNormalAvgTimeArray = new Array(); // 날짜별 일반차 평균주차시간을 저장하기 위한 배열
+        var dateLightAvgTimeArray = new Array(); // 날짜별 경차 평균주차시간을 저장하기 위한 배열
+        var dateParkingEfficiency = new Array(); // 날짜별 주차효율을 저장하기 위한 배열
+        var dateParkingRotation = new Array(); // 날짜별 회전율을 저장하기 위한 배열
+
+        // 첫번째 42개면에 대한 주차정보를 넣어준다
+        for (var i = 0; i < 42; i++) {
+            lotUseArray[count[i].lot_id - 1] = count[i].lot_use;
+            lotCountArray[i] = 0;
+            lotTimeArray[i] = 0;
+            lotAvgTimeArray[i] = 0;
+        }
+
+        // 날짜 푸쉬
+        dateIndex = 0;
+        dateLabel.push(count[0].time.substring(5, 7) + '월 ' + count[0].time.substring(8, 10) + '일');
+        for (var i = 42; i < count.length; i++) {
+            // 날짜 변경선
+            if ((count[i - 1].time).substring(11, 13) == 18 && (count[i - 1].time).substring(14, 16) == 59 && count[i -
+                    1].lot_id == 41) {
+                // console.log('date change! ' + count[i - 1].time);
+                dateLabel.push(count[i].time.substring(5, 7) + '월 ' + count[i].time.substring(8, 10) + '일');
+
+                dateNormalCarCount[dateIndex] = normalCarCount;
+                dateLightCarCount[dateIndex] = lightCarCount;
+                // 날짜별 평균주차시간을 구하기 위한 발버둥
+                dateNormalAvgTimeArray[dateIndex] = 0;
+                dateLightAvgTimeArray[dateIndex] = 0;
+                // 각 주차면에 대한 평균주차시간을 구한다
+                for (var k = 0; k < 42; k++) {
+                    if (lotCountArray != 0 && lotAvgTimeArray[k] != 0) {
+                        lotAvgTimeArray[k] = Math.floor(lotAvgTimeArray[k] / lotCountArray[k]);
+                    }
+                }
+                // 이를 다시 일간평균주차시간으로 옮겨서
+                for (var k = 0; k < 42; k++) {
+                    if (k < 5 || k == 9 || k == 19) {
+                        dateLightAvgTimeArray[dateIndex] += lotAvgTimeArray[k];
+                    } else {
+                        dateNormalAvgTimeArray[dateIndex] += lotAvgTimeArray[k];
+                    }
+                }
+                // 주차면 갯수로 나누어 저장한다.
+                dateNormalAvgTimeArray[dateIndex] = Math.floor(dateNormalAvgTimeArray[dateIndex] / 35);
+                dateLightAvgTimeArray[dateIndex] = Math.floor(dateLightAvgTimeArray[dateIndex] / 7);
+
+                // 이후 다음날을 위해 변수들을 초기화시켜준다.
+                for (var k = 0; k < 42; k++) {
+                    lotCountArray[k] = 0;
+                    lotTimeArray[k] = 0;
+                    lotAvgTimeArray[k] = 0;
+                }
+                normalCarCount = 0;
+                lightCarCount = 0;
+                dateIndex++;
+            }
+
+            var j = i % 42;
+            // lot_use 값이 1에서 0이 되었다면 입차
+            if (lotUseArray[j] > count[i].lot_use) {
+                // 경차인 경우
+                if (j <= 5 || j == 10 || j == 20) {
+                    lightCarCount++;
+                }
+                // 일반차인 경우
+                else {
+                    normalCarCount++;
+                }
+                // 입차시간 저장
+                // console.log((j+1) + '번 자동차 입차! ' + count[i].time);
+                lotTimeArray[j] = count[i].time;
+                lotCountArray[j]++;
+            }
+            // 출차되었을 경우 시간 계산 (0 -> 1)
+            else if (lotUseArray[j] < count[i].lot_use && lotTimeArray[j] != 0) {
+                // console.log((j+1) + '번 자동차 출차! ' + count[i].time);
+                lotAvgTimeArray[j] += calculateDateDifference(count[i].time, lotTimeArray[j]);
+                lotTimeArray[j] = 0;
+            }
+            lotUseArray[j] = count[i].lot_use;
+        }
+
+        // 데이터를 테이블에 추가한다.
+        for (var i = 0; i < dateIndex; i++) {
+            row = $('<tr><td>' + dateLabel[i] + '</td>');
+            $('#datatable > tbody:last').append(row);
+            row.append(
+                '<td>' + (dateNormalCarCount[i] + dateLightCarCount[i]) + '대</td>' +
+                '<td>' + dateNormalCarCount[i] + '대</td>' +
+                '<td>' + dateLightCarCount[i] + '대</td>' +
+                '<td>' + (dateNormalAvgTimeArray[i] + dateLightAvgTimeArray[i]) / 2 + '분</td>' +
+                '<td>' + dateNormalAvgTimeArray[i] + '분</td>' +
+                '<td>' + dateLightAvgTimeArray[i] + '분</td>' +
+                '<td id=\"day_efficiency_td_' + i + '\"></td>' +
+                '<td id=\"night_efficiency_td_' + i + '\"></td>' +
+                '<td id=\"day_rotation_td_' + i + '\"></td>' +
+                '<td id=\"night_rotation_td_' + i + '\"></td>');
+        }
+
+        dateLabel.pop();
+        // refreshAvgTimeDisplay(lotAvgTimeArray);
+        drawAvgParkingTimeGraph(dateLabel, dateNormalAvgTimeArray, dateLightAvgTimeArray);
+
+        var total = 0;
+        var nCount = 0;
+        var lCount = 0;
+        for (var i = 0; i < dateNormalCarCount.length; i++) {
+            nCount += dateNormalCarCount[i];
+            lCount += dateLightCarCount[i];
+        }
+        $('#total-count').text(nCount + lCount + '대');
+        $('#normal-count').text(nCount + '대');
+        $('#light-count').text(lCount + '대');
+    }
+
+    function calculateDateDifference(date1, date2) {
+        var oldDate = new Date(parseInt(date1.substring(0, 4), 10),
+            parseInt(date1.substring(5, 7), 10) - 1,
+            parseInt(date1.substring(8, 10), 10),
+            parseInt(date1.substring(11, 13), 10),
+            parseInt(date1.substring(14, 16), 10));
+
+        var newDate = new Date(parseInt(date2.substring(0, 4), 10),
+            parseInt(date2.substring(5, 7), 10) - 1,
+            parseInt(date2.substring(8, 10), 10),
+            parseInt(date2.substring(11, 13), 10),
+            parseInt(date2.substring(14, 16), 10));
+        // console.log('oldDate: ' + oldDate + ", newDate: " + newDate);
+        var ss = Math.floor(oldDate.getTime() - newDate.getTime()) / 1000;
+        var mm = Math.floor(ss / 60);
+        return mm;
+    }
+
+    function drawAvgParkingTimeGraph(labels, normalCarData, lightCarData) {
+
+        var canvasDiv = '<canvas id="average-time" style="border:0px solid white;" height="265" width="0"></canvas>';
+        $('#average-time').remove();
+        $('#canvasWrapper').css("width", labels.length * 100 + "px");
+        $('#canvasWrapper').append(canvasDiv);
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: labels,
+            datasets: [{
+                label: '일반차',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                data: normalCarData
+            }, {
+                label: '경차',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                data: lightCarData
+            }]
+        };
+
+        var ctx = document.getElementById('average-time').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: false,
+                    text: ''
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                }
+            }
+        });
+
+        var size = normalCarData.length;
+        var normalTotal = 0;
+        var lightTotal = 0;
+        for (var i = 0; i < size; i++) {
+            normalTotal += normalCarData[i];
+            lightTotal += lightCarData[i];
+        }
+        normalTotal = Math.floor(normalTotal / size);
+        lightTotal = Math.floor(lightTotal / size);
+        $('#normal_time_hour').text(Math.floor(normalTotal / 60) + '시간 ');
+        $('#normal_time_minute').text(normalTotal % 60 + '분');
+        $('#light_time_hour').text(Math.floor(lightTotal / 60) + '시간 ');
+        $('#light_time_minute').text(lightTotal % 60 + '분');
+    }
+
+    // 시간대별 주차율 그래프 그리기
+    function drawHourlyGraph(info) {
+        var hourlyParkingLotPercentage = new Array(24);
+        for (var i = 0; i < 24; i++) {
+            hourlyParkingLotPercentage[i] = 0;
+        }
+        for (var i = 0; i < info.length - 1; i++) {
+            var j = i % 24;
+            hourlyParkingLotPercentage[j] += info[i].lot_use;
+        }
+        var dateLength = Math.floor((info.length - 1) / 24);
+        // console.log('dl : ' + dateLength);
+        for (var i = 0; i < 24; i++) {
+            var data = 42 * dateLength - hourlyParkingLotPercentage[i];
+            hourlyParkingLotPercentage[i] = Math.floor((data / (42 * dateLength)) * 100);
+        }
+        // console.log('시간대별 주차율');
+        var night_efficiency = 0;
+        var day_efficiency = 0;
+        for (var i = 0; i < 24; i++) {
+            if (i < 7 || i > 19) {
+                night_efficiency += hourlyParkingLotPercentage[i];
+            } else {
+                day_efficiency += hourlyParkingLotPercentage[i];
+            }
+        }
+        night_efficiency = (night_efficiency / 11).toFixed(2);
+        day_efficiency = (day_efficiency / 13).toFixed(2);
+        // 주차 효율은 시간대별 주차율을 토대로 계산해낼 수 있다.
+        $('#efficiency_day').text(day_efficiency + '%');
+        $('#efficiency_night').text(night_efficiency + '%');
+
+        var dailyDayEfficiency = 0;
+        var dailyNightEfficiency = 0;
+        //테이블에 추가 (날짜별 효율이 필요하다)
+        for (var i = 0; i < info.length - 1; i++) {
+            var j = i % 24;
+            if (j < 7 || j > 19) {
+                dailyNightEfficiency += info[i].lot_use;
+            } else {
+                dailyDayEfficiency += info[i].lot_use;
+            }
+            if (i % 24 == 23) {
+                dailyDayEfficiency = ((42 * 13 - dailyDayEfficiency) / 42 / 13 * 100).toFixed(2);
+                dailyNightEfficiency = ((42 * 11 - dailyNightEfficiency) / 42 / 11 * 100).toFixed(2);
+                var k = Math.floor(i/24);
+                $('#day_efficiency_td_' + k).text(dailyDayEfficiency);
+                $('#night_efficiency_td_' + k).text(dailyNightEfficiency);
+                dailyDayEfficiency = 0;
+                dailyNightEfficiency = 0;
+            }
+        }
+        // row.append(
+        //     '<td>' + day_efficiency + '%</td>' +
+        //     '<td>' + night_efficiency + '%</td>');
+
+        var canvasDiv = '<canvas id="time-graph" style="border:0px solid white;"></canvas>';
+        $('#time-graph').remove();
+        $('#canvasWrapper2').append(canvasDiv);
+        var ctx2 = document.getElementById('time-graph').getContext('2d');
+        var chart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: [00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+                    22, 23
+                ],
+                datasets: [{
+                    label: '시간대별 주차율(%)',
+                    backgroundColor: 'rgba(230, 90, 255, 0.2)',
+                    borderColor: 'rgba(230, 90, 255, 1)',
+                    data: hourlyParkingLotPercentage,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        ticks: {
+                            maxTicksLimit: 10,
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true,
+                            steps: 5,
+                            stepValue: 5,
+                            max: 100,
+                        }
+                    }]
+                },
+            }
+        });
+    }
+
+    // 회전율 구하기
+    function calculateRotation(counting) {
+        // 전체 회전율을 계산하기 위한 변수
+        var day_count = 0;
+        var night_count = 0;
+        // 매일 계산하기위한 변수
+        var day = 0;
+        var daily_day_count = 0;
+        var daily_night_count = 0;
+        for (var i = 1; i < counting.length; i++) {
+            // 야간데이터
+            if (parseInt(counting[i].time.substring(11, 13)) < 7 || parseInt(counting[i].time.substring(11, 13)) > 19) {
+                if (counting[i].lot_use < counting[i - 1].lot_use) {
+                    night_count += (counting[i - 1].lot_use - counting[i].lot_use);
+                    daily_night_count += (counting[i - 1].lot_use - counting[i].lot_use);
+                }
+            } // 주간데이터
+            else {
+                if (counting[i].lot_use < counting[i - 1].lot_use) {
+                    day_count += (counting[i - 1].lot_use - counting[i].lot_use);
+                    daily_day_count += (counting[i - 1].lot_use - counting[i].lot_use);
+                }
+            }
+            // 하루가 끝날 때 계산
+            if ((counting[i - 1].time).substring(11, 13) == 23 && (counting[i - 1].time).substring(14, 16) == 59) {
+                // console.log('date change!');
+                $('#day_rotation_td_' + day).text((daily_day_count/42).toFixed(2));
+                $('#night_rotation_td_' + day).text((daily_night_count/42).toFixed(2));
+                // console.log(daily_day_count + ", " + daily_night_count);
+                daily_day_count = 0;
+                daily_night_count = 0;
+                day++;
+            }
+        }
+        day_count = (day_count / 42 / dateIndex).toFixed(2);
+        night_count = (night_count / 42 / dateIndex).toFixed(2);
+
+        // 테이블에 추가
+        // row.append(
+        //     '<td>' + day_count + '대</td>' +
+        //     '<td>' + night_count + '대</td>');
+
+        // 변수 업데이트
+        $('#rotation_day').text(day_count + '대');
+        $('#rotation_night').text(night_count + '대');
+
+        // 계산 끝나면 로딩창 hidden
+        $(".loading-layer").attr('style', 'visibility:hidden');
+    }
+
+    function clearAllText() {
+        $('#total-count').text('');
+        $('#normal-count').text('');
+        $('#light-count').text('');
+        $('#average-time').remove();
+        $('#normal_time_hour').text('');
+        $('#normal_time_minute').text('');
+        $('#light_time_hour').text('');
+        $('#light_time_minute').text('');
+        $('#time-graph').remove();
+        $('#efficiency_day').text('');
+        $('#efficiency_night').text('');
+        $('#rotation_day').text('');
+        $('#rotation_night').text('');
+    }
+</script>

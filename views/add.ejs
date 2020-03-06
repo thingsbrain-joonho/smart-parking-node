@@ -1,0 +1,460 @@
+<% layout('/base') %>
+
+<!-- Vendor CSS -->
+<link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" href="/assets/vendor/magnific-popup/magnific-popup.css" />
+<link rel="stylesheet" href="/assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+
+<!-- Specific Page Vendor CSS -->
+<link rel="stylesheet" href="/assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+<link rel="stylesheet" href="/assets/vendor/select2/select2.css" />
+<link rel="stylesheet" href="/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+<link rel="stylesheet" href="/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css" />
+<link rel="stylesheet" href="/assets/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css" />
+<link rel="stylesheet" href="/assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css" />
+<link rel="stylesheet" href="/assets/vendor/dropzone/css/basic.css" />
+<link rel="stylesheet" href="/assets/vendor/dropzone/css/dropzone.css" />
+<link rel="stylesheet" href="/assets/vendor/bootstrap-markdown/css/bootstrap-markdown.min.css" />
+<link rel="stylesheet" href="/assets/vendor/summernote/summernote.css" />
+<link rel="stylesheet" href="/assets/vendor/summernote/summernote-bs3.css" />
+<link rel="stylesheet" href="/assets/vendor/codemirror/lib/codemirror.css" />
+<link rel="stylesheet" href="/assets/vendor/codemirror/theme/monokai.css" />
+
+<!-- Theme CSS -->
+<link rel="stylesheet" href="/assets/stylesheets/theme.css" />
+
+<!-- Skin CSS -->
+<link rel="stylesheet" href="/assets/stylesheets/skins/default.css" />
+
+<!-- Theme Custom CSS -->
+<link rel="stylesheet" href="/assets/stylesheets/theme-custom.css">
+
+<!-- Head Libs -->
+<script src="/assets/vendor/modernizr/modernizr.js"></script>
+
+<style>
+    /* style all input elements with a required attribute */
+    input:required {
+        box-shadow: 4px 4px 10px rgba(200, 0, 0, 0.5);
+    }
+</style>
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>주차장 추가</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>주차장 추가</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                    </div>
+
+                    <h2 class="panel-title">주차장 추가</h2><br>
+                    <span id="error" style="color:red;"></span>
+                </header>
+                <div class="panel-body">
+                    <form id="test" class="form-horizontal form-bordered">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">주차장 번호</label>
+                            <div class="col-md-6">
+                                <input type="text" value="자동 생성" class="form-control" readonly="readonly"
+                                    name="number" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">주차장 이름</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="ex) 사무실 앞 주차장" name="name" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">주차장 주소</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="ex) 제주시 복지로3길 1-4"
+                                    name="address" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">위치값<br>
+                                <p style="color:blue; font-size: 12px;">실수만 입력 가능합니다.</p>
+                            </label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" placeholder="위도 (ex. 33.489542)"
+                                            name="x" floatOnly>
+                                    </div>
+                                    <div class="visible-xs mb-md"></div>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" placeholder="경도 (ex. 126.523265)"
+                                            name="y" floatOnly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">주차칸 갯수<br>
+                                <p style="color:blue; font-size: 12px;">숫자만 입력 가능합니다.</p>
+                            </label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="ex) 28" name="parking-lot"
+                                    numberOnly />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">cctv 갯수<br>
+                                <p style="color:blue; font-size: 12px;">숫자만 입력 가능합니다.</p>
+                            </label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="ex) 5" name="cctv" numberOnly />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">30분 기본요금<br>
+                                <p style="color:blue; font-size: 12px;">숫자만 입력 가능합니다.</p>
+                            </label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="ex) 1000" name="basic_charge"
+                                    numberOnly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="inputReadOnly">15분 초과요금<br>
+                                <p style="color:blue; font-size: 12px;">숫자만 입력 가능합니다.</p>
+                            </label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="ex) 500" name="additional_charge"
+                                    numberOnly />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">주차장 종류</label>
+                            <div class="col-md-6">
+                                <label class="radio-inline">
+                                    <input type="radio" value="공영" name="charge-type"> 공영
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="사설" name="charge-type"> 사설
+                                </label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label class="radio-inline">
+                                    <input type="radio" value="노상" name="park-type"> 노상
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="노외" name="park-type"> 노외
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="workingday">운영요일</label>
+                            <div class="col-md-6">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="1" name="workingday"> 평일
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="2" name="workingday"> 토요일
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="3" name="workingday"> 공휴일
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">평일 운영시간</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                            <input type="text" value="9:00 AM" data-plugin-timepicker
+                                                class="form-control" name="normal-start">
+                                        </div>
+                                    </div>
+                                    <div class="visible-xs mb-md"></div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                            <input type="text" value="10:00 PM" data-plugin-timepicker
+                                                class="form-control" name="normal-end">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">토요일 운영시간</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                            <input type="text" value="9:00 AM" data-plugin-timepicker
+                                                class="form-control" name="saturday-start">
+                                        </div>
+                                    </div>
+                                    <div class="visible-xs mb-md"></div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                            <input type="text" value="10:00 PM" data-plugin-timepicker
+                                                class="form-control" name="saturday-end">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">공휴일 운영시간</label>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                            <input type="text" value="9:00 AM" data-plugin-timepicker
+                                                class="form-control" name="sunday-start">
+                                        </div>
+                                    </div>
+                                    <div class="visible-xs mb-md"></div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-clock-o"></i>
+                                            </span>
+                                            <input type="text" value="10:00 PM" data-plugin-timepicker
+                                                class="form-control" name="sunday-end">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <footer class="panel-footer" style="text-align:right; margin-top:30px;">
+                        <button id="submit" class="btn btn-primary">완료 </button>
+                        <!-- <button type="reset" class="btn btn-default">Reset</button> -->
+                    </footer>
+                    <!-- <button id="submit">submit</button> -->
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+<!-- AJAX 관련 웹 메소드 -->
+<script>
+    $('#submit').click(function () {
+        if (checkRequireOption()) {
+            var data = $('#test').serializeArray();
+            // console.log(data);
+            $.ajax({
+                url: '',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    data: data
+                },
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                success: function (result) {
+                    if (result) {
+                        console.log('success');
+                    }
+                }
+            });
+            Swal.fire({
+                // position: 'top-end',
+                type: 'success',
+                title: '저장되었습니다',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            setTimeout(function () {
+                $(location).attr("href", "http://definetestserver.iptime.org:8083");
+            }, 1000);
+        }
+    });
+
+    $("input:text[numberOnly]").on("keyup", function () {
+        $(this).val($(this).val().replace(/[^0-9]/g, ""));
+    });
+
+    $("input:text[floatOnly]").on("keyup", function () {
+        $(this).val($(this).val().replace(/[^0-9^.]/g, ""));
+    });
+
+    // 필수항목 체크 및 초기화 함수
+    function checkRequireOption() {
+        $('#error').text('');
+        var isValid = true;
+        if (document.getElementsByName('name')[0].value == "") {
+            $("input[name=name]").attr("required", true);
+            isValid = false;
+        } else if(document.getElementsByName('name')[0].value.length > 50){
+            $("input[name=name]").attr("required", true);
+            $('#error').text('주차장 이름은 50자를 넘을 수 없습니다.');
+            isValid = false;
+        }
+        else {
+            $("input[name=name]").attr("required", false);
+        }
+        if (document.getElementsByName('address')[0].value == "") {
+            $("input[name=address]").attr("required", true);
+            isValid = false;
+        } else if(document.getElementsByName('address')[0].value.length > 50){
+            $("input[name=address]").attr("required", true);
+            $('#error').text('주차장 주소는 50자를 넘을 수 없습니다.');
+            isValid = false;
+        }
+        else {
+            $("input[name=address]").attr("required", false);
+        }
+        if (document.getElementsByName('x')[0].value == "") {
+            $("input[name=x]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=x]").attr("required", false);
+        }
+        if (document.getElementsByName('y')[0].value == "") {
+            $("input[name=y]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=y]").attr("required", false);
+        }
+        if (document.getElementsByName('parking-lot')[0].value == "") {
+            $("input[name=parking-lot]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=parking-lot]").attr("required", false);
+        }
+        if (document.getElementsByName('cctv')[0].value == "") {
+            $("input[name=cctv]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=cctv]").attr("required", false);
+        }
+        if (document.getElementsByName('basic_charge')[0].value == "") {
+            $("input[name=basic_charge]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=basic_charge]").attr("required", false);
+        }
+        if (document.getElementsByName('additional_charge')[0].value == "") {
+            $("input[name=additional_charge]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=additional_charge]").attr("required", false);
+        }
+        if (!$("input[name=charge-type]").is(':checked')) {
+            $("input[name=charge-type]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=charge-type]").attr("required", false);
+        }
+        if (!$("input[name=park-type]").is(':checked')) {
+            $("input[name=park-type]").attr("required", true);
+            isValid = false;
+        } else {
+            $("input[name=park-type]").attr("required", false);
+        }
+        if (isValid) return true;
+        else return false;
+    }
+
+    function resetRequireOption() {
+        $("input[name=name]").attr("required", false);
+        $("input[name=address]").attr("required", false);
+        $("input[name=x]").attr("required", false);
+        $("input[name=y]").attr("required", false);
+        $("input[name=parking-lot]").attr("required", false);
+        $("input[name=cctv]").attr("required", false);
+        $("input[name=basic_charge]").attr("required", false);
+        $("input[name=additional_charge]").attr("required", false);
+        $("input[name=charge-type]").attr("required", false);
+        $("input[name=park-type]").attr("required", false);
+    }
+</script>
+
+<!-- Vendor -->
+<script src="/assets/vendor/jquery/jquery.js"></script>
+<script src="/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="/assets/vendor/nanoscroller/nanoscroller.js"></script>
+<script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script src="/assets/vendor/magnific-popup/magnific-popup.js"></script>
+<script src="/assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+<!-- Specific Page Vendor -->
+<script src="/assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+<script src="/assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+<script src="/assets/vendor/select2/select2.js"></script>
+<script src="/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="/assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
+<script src="/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+<script src="/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="/assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+<script src="/assets/vendor/fuelux/js/spinner.js"></script>
+<script src="/assets/vendor/dropzone/dropzone.js"></script>
+<script src="/assets/vendor/bootstrap-markdown/js/markdown.js"></script>
+<script src="/assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
+<script src="/assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+<script src="/assets/vendor/codemirror/lib/codemirror.js"></script>
+<script src="/assets/vendor/codemirror/addon/selection/active-line.js"></script>
+<script src="/assets/vendor/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="/assets/vendor/codemirror/mode/javascript/javascript.js"></script>
+<script src="/assets/vendor/codemirror/mode/xml/xml.js"></script>
+<script src="/assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="/assets/vendor/codemirror/mode/css/css.js"></script>
+<script src="/assets/vendor/summernote/summernote.js"></script>
+<script src="/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+<script src="/assets/vendor/ios7-switch/ios7-switch.js"></script>
+
+<!-- Theme Base, Components and Settings -->
+<script src="/assets/javascripts/theme.js"></script>
+
+<!-- Theme Custom -->
+<script src="/assets/javascripts/theme.custom.js"></script>
+
+<!-- Theme Initialization Files -->
+<script src="/assets/javascripts/theme.init.js"></script>
+
+<!-- Examples -->
+<script src="/assets/javascripts/forms/examples.advanced.form.js" />

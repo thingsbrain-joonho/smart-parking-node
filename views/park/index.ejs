@@ -1,0 +1,281 @@
+<% layout('/base') %>
+
+<link rel="stylesheet" href="assets/vendor/owl-carousel/owl.carousel.css" />
+<link rel="stylesheet" href="assets/vendor/owl-carousel/owl.theme.css" />
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Home</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Home</span></li>
+            </ol>
+
+            <!-- <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a> -->
+        </div>
+    </header>
+
+    <!-- [HERE!!!!] start: page -->
+    <div class="row">
+        <div class="col-md-12" style="text-align:center;">
+            <div class="loading-layer"></div>
+            <div id="load" style="position:relative; width:860px; height:490px; margin:0 auto;">
+                <canvas id="cam" style="position:absolute;left: 0px; top: 0px;"></canvas>
+                <!--<script type="text/javascript" src="jsmpeg.min.js"></script>-->
+                <canvas id="rect" style="position:absolute; left: 0px; top: 0px;"></canvas>
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <section class="panel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="chart-data-selector" id="salesSelectorWrapper">
+                                <h2>
+                                    Ratio:
+                                    <strong>
+                                        <select class="form-control" id="salesSelector">
+                                            <option value="JSOFT Admin">1분 간격</option>
+                                            <option value="JSOFT Drupal" selected>1시간 간격</option>
+                                            <option value="JSOFT Wordpress">1일 간격</option>
+                                        </select>
+                                    </strong>
+                                </h2>
+                                <div id="salesSelectorItems" class="chart-data-selector-items mt-sm">
+                                    <div class="chart chart-sm" data-sales-rel="JSOFT Admin" id="flotDashSales1"
+                                        class="chart-active"></div>
+                                    <script>
+                                        var flotDashSales1Data = [{
+                                            data: [ <%-chart1 %> ],
+                                            color: "#0088cc"
+                                        }];
+                                    </script>
+
+                                    <div class="chart chart-sm" data-sales-rel="JSOFT Drupal" id="flotDashSales2"
+                                        class="chart-hidden"></div>
+                                    <script>
+                                        var flotDashSales2Data = [{
+                                            data: [ <%-chart2 %> ],
+                                            color: "#2baab1"
+                                        }];
+                                    </script>
+
+                                    <div class="chart chart-sm" data-sales-rel="JSOFT Wordpress" id="flotDashSales3"
+                                        class="chart-hidden"></div>
+                                    <script>
+                                        var flotDashSales3Data = [{
+                                            data: [ <%-chart3 %> ],
+                                            color: "#734ba9"
+                                        }];
+                                    </script>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-center">
+                            <h2 class="panel-title mt-md">Parking Ratio</h2>
+                            <div class="liquid-meter-wrapper liquid-meter-sm mt-lg">
+                                <div class="liquid-meter">
+                                    <meter min="0" max="100" value="<%= pk_ratio %>" id="meterSales"></meter>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col-md-4">
+            <section class="panel panel-featured-left panel-featured-tertiary">
+                <div class="panel-body">
+                    <div class="widget-summary widget-summary-sm">
+                        <div class="widget-summary-col widget-summary-col-icon">
+                            <div class="summary-icon bg-tertiary">
+                                <i class="fa fa-car"></i>
+                            </div>
+                        </div>
+                        <div class="widget-summary-col">
+                            <div class="summary">
+                                <h4 class="title">주차장명</h4>
+                                <div class="info">
+                                    <strong class="amount"><%= pk_name %></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="panel panel-featured-left panel-featured-tertiary">
+                <div class="panel-body">
+                    <div class="widget-summary widget-summary-sm">
+                        <div class="widget-summary-col widget-summary-col-icon">
+                            <div class="summary-icon bg-tertiary">
+                                <i class="fa fa-map-marker"></i>
+                            </div>
+                        </div>
+                        <div class="widget-summary-col">
+                            <div class="summary">
+                                <h4 class="title">주차장 주소</h4>
+                                <div class="info">
+                                    <strong class="amount"><%= pk_location %></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="tabs">
+                <ul class="nav nav-tabs text-right tabs-primary">
+                    <li class="active">
+                        <a href="#ratio_tab" data-toggle="tab">주차 비율</a>
+                    </li>
+                    <li>
+                        <a href="#time_tab" data-toggle="tab">시간 정보</a>
+                    </li>
+                    <li>
+                        <a href="#charge_tab" data-toggle="tab">요금 정보</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="ratio_tab" class="tab-pane active">
+                        <div class="text-center">
+                            <%
+                            row_use.forEach(function(data){
+                            var cnt = 1;
+                            if(data['lot_use'] == 0) {
+                            %>
+                            <button type='button'
+                                class='mb-xs mt-xs mr-xs btn btn-primary'><%= data['lot_id'] %></button>
+                            <% } else { %>
+                            <button type='button' class='mb-xs mt-xs mr-xs btn btn-success'
+                                disabled><%= data['lot_id'] %></button>
+                            <% } cnt++; }); %>
+                        </div>
+                        <div class="progress progress-striped light active m-md">
+                            <div id="ratio-graph" class="progress-bar progress-bar-info" role="progressbar"
+                                aria-valuenow="<%= pk_ratio %>" aria-valuemin="0" aria-valuemax="100"
+                                style="width: <%= pk_ratio %>%;">
+                                주차비율 <text id="ratio-text"><%= pk_ratio %></text>%
+                            </div>
+                        </div>
+                    </div>
+                    <div id="time_tab" class="text-center tab-pane">
+                        <p><code>운영시간</code></p>
+                        <p>
+                            평일: <%= w_start_time %> ~ <%= w_end_time %><br>
+                            토요일: <%= s_start_time %> ~ <%= s_end_time %><br>
+                            공휴일: <%= h_start_time %> ~ <%= h_end_time %>
+                        </p>
+                    </div>
+                    <div id="charge_tab" class="text-center tab-pane">
+                        <p><code>요금정보</code></p>
+                        <p>
+                            30분당 <%= cost %>원<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var client = new WebSocket('ws://definetestserver.iptime.org:9998');
+        var canvas = document.getElementById("cam");
+        var player = new jsmpeg(client, {
+            canvas: canvas
+        });
+        var ratio = canvas.width / canvas.height;
+        var height = 850;
+        var width = height * ratio;
+        // canvas.style.width = width + 'px';
+        canvas.style.width = height + 'px';
+
+        var rectPosition = [0, 40, 120, 210, 310, 430, 550];
+        var lot_use = [0, 0, 0, 0, 0, 0, 0];
+
+        var rectCanvas = document.getElementById("rect");
+        var ctx = rectCanvas.getContext("2d");
+        rectCanvas.width = 848;
+        rectCanvas.height = 477;
+
+        client.addEventListener('message', function (event) {
+            // console.log('message');
+            if (typeof (event.data) == 'string') {
+                // console.log(player);
+                obj = JSON.parse(event.data);
+                // console.log('obj_lot_id : ' + obj.lot_id + ' obj_lot_use : ' + obj.lot_use);
+                lot_use[obj.lot_id] = obj.lot_use;
+
+                ctx.clearRect(0, 0, rectCanvas.width, rectCanvas.height);
+                var cnt = 0;
+                for (var i = 1; i < rectPosition.length; i++) {
+                    drawRectangle(i, lot_use[i]);
+                    if (lot_use[i] == 0) {
+                        cnt++;
+                    }
+                }
+                // console.log(cnt/6);
+                var ratio = cnt / 6 * 100;
+                $('#ratio-graph').css('width', ratio + '%');
+                $('#ratio-text').html(Math.floor(cnt / 6 * 100));
+                $('#meterSales').liquidMeter('set', Math.floor(cnt / 6 * 100));
+            }
+        });
+
+        function drawRectangle(id, use) {
+            // console.log('drawing...');
+            var $btn = $("#" + id);
+            if (use == 0) {
+                ctx.strokeStyle = "red";
+                $btn.removeClass("btn-success");
+                $btn.addClass("btn-primary");
+                $btn.attr("disabled", false);
+            } else if (use == 1) {
+                ctx.strokeStyle = "blue";
+                $btn.removeClass("btn-primary");
+                $btn.addClass("btn-success");
+                $btn.attr("disabled", true);
+            }
+            ctx.beginPath();
+            // ctx.clearRect(rectPosition[id], 280, 40, 40);
+            ctx.rect(rectPosition[id], 260, 40, 40);
+            ctx.stroke();
+        }
+    </script>
+
+    <script>
+        var buttons = document.getElementsByClassName('mb-xs mt-xs mr-xs btn');
+        for (var i = 0; i < buttons.length; i++) {
+            // console.log(buttons[i]);
+            buttons[i].id = ("" + (i + 1));
+        }
+    </script>
+
+    <!-- 창 닫기 이벤트 -->
+    <!-- <script>
+        window.onbeforeunload = function () {
+            var post = 'close';
+            $.ajax({
+                url: '',
+                dataType: 'json',
+                type: 'POST',
+                // data: {data:data},
+                success: function (result) {
+                    if (result) {
+                        console.log('success');
+                    }
+                }
+            });
+        }
+    </script> -->
+</section>

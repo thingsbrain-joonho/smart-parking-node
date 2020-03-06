@@ -1,0 +1,418 @@
+<% layout('/base') %>
+
+<style>
+    .cam_icon {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.8;
+        max-width: 100%;
+        height: auto;
+        width: auto;
+        z-index: 2;
+    }
+
+    .cam_icon:hover {
+        opacity: 1.0;
+        cursor: pointer;
+    }
+
+    .light_icon {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.6;
+        max-width: 100%;
+        height: auto;
+        width: auto;
+        display: none;
+        z-index: 1;
+    }
+
+    .ptz_icon {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.6;
+        max-width: 100%;
+        height: auto;
+        width: auto;
+        display: none;
+        z-index: 1;
+        transform-origin: top;
+        -webkit-animation: spin 15s linear infinite;
+        -moz-animation: spin 15s linear infinite;
+        animation: spin 15s linear infinite;
+    }
+    .parking_lot_icon {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @-moz-keyframes spin {
+        100% {
+            -moz-transform: rotate(360deg);
+        }
+    }
+
+    @-webkit-keyframes spin {
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>도움말</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>도움말</span></li>
+            </ol>
+
+            <!-- <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a> -->
+        </div>
+    </header>
+
+    <!-- [HERE!!!!] start: page -->
+    <div class="row" style="margin-top:-60px;">
+      <div id="refresh">
+        <div class="col-md-12"
+          style="background-color:white; height:600px; border:1px solid gray; border-radius:20px;">
+          <div class="col-md-6" style="text-align:center;">
+            <h3 style="color:black; display: inline-block;">주차장 도면</h3>
+            <div style="display: inline-block;">
+                <button class="reload" style="margin-left:10px;">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+            <div style="position:relative; width:100%; height:410px; margin-top:0px;">
+                <img style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; height:auto; margin-bottom: 30px; width:550px;"
+                    draggable="false" src="/images/web/parking_line_2.png">
+                <!-- parking(1~5) -->
+                <img id="lot1" class="parking_lot_icon cam10" style="left: 180px; right:0; top: 15px; width:25px;"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot2" class="parking_lot_icon cam10" style="left: 240px; right:0; top: 15px; width:25px;"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot3" class="parking_lot_icon cam10" style="left: 302px; right:0; top: 15px; width:25px;"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot4" class="parking_lot_icon cam10" style="left: 362px; right:0; top: 15px; width:25px;"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot5" class="parking_lot_icon cam10"
+                    style="left: 422px; right:0; top: 15px;  width:25px;" src="/images/web/lot_empty.png" />
+                <!-- parking(6~9) -->
+                <img id="lot6" class="parking_lot_icon cam6"
+                    style="left: -460px; right:0; top: 106px; width:25px; transform:rotate(90deg);"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot7" class="parking_lot_icon cam6"
+                    style="left: -460px; right:0; top: 137px; width:25px; transform:rotate(90deg);"
+                    src="/images/web/lot_use.png" />
+                <img id="lot8" class="parking_lot_icon cam6"
+                    style="left: -460px; right:0; top: 167px; width:25px; transform:rotate(90deg);"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot9" class="parking_lot_icon cam6"
+                    style="left: -460px; right:0; top: 198px; width:25px; transform:rotate(90deg);"
+                    src="/images/web/lot_use.png" />
+                <!-- parking(10~19) -->
+                <img id="lot10" class="parking_lot_icon cam6"
+                    style="left: -193px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot11" class="parking_lot_icon cam4"
+                    style="left: -133px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot12" class="parking_lot_icon cam4"
+                    style="left: -72px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot13" class="parking_lot_icon cam4"
+                    style="left: -12px; right:0; top: 170px; width:25px;" src="/images/web/lot_use.png" />
+                <img id="lot14" class="parking_lot_icon cam4"
+                    style="left: 51px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot15" class="parking_lot_icon cam4"
+                    style="left: 111px; right:0; top: 170px; width:25px;" src="/images/web/lot_use.png" />
+                <img id="lot16" class="parking_lot_icon cam5"
+                    style="left: 173px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot17" class="parking_lot_icon cam5"
+                    style="left: 233px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot18" class="parking_lot_icon cam5"
+                    style="left: 293px; right:0; top: 170px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot19" class="parking_lot_icon cam5"
+                    style="left: 354px; right:0; top: 170px; width:25px;" src="/images/web/lot_use.png" />
+                <!-- parking(20~29) -->
+                <img id="lot20" class="parking_lot_icon cam6"
+                    style="left: -193px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot21" class="parking_lot_icon cam13"
+                    style="left: -133px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot22" class="parking_lot_icon cam13"
+                    style="left: -72px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot23" class="parking_lot_icon cam13"
+                    style="left: -12px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot24" class="parking_lot_icon cam13"
+                    style="left: 51px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot25" class="parking_lot_icon cam14"
+                    style="left: 111px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot26" class="parking_lot_icon cam14"
+                    style="left: 173px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot27" class="parking_lot_icon cam14"
+                    style="left: 233px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot28" class="parking_lot_icon cam14"
+                    style="left: 293px; right:0; top: 230px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot29" class="parking_lot_icon cam14"
+                    style="left: 354px; right:0; top: 230px; width:25px;" src="/images/web/lot_use.png" />
+                <!-- parking(30,31) -->
+                <img id="lot30" class="parking_lot_icon cam11"
+                    style="left: -484px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot31" class="parking_lot_icon cam11"
+                    style="left: -423px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <!-- parking(32~42) -->
+                <img id="lot32" class="parking_lot_icon cam7"
+                    style="left: -175px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot33" class="parking_lot_icon cam7"
+                    style="left: -114px; right:0; top: 370px; width:25px;" src="/images/web/lot_use.png" />
+                <img id="lot34" class="parking_lot_icon cam7"
+                    style="left: -53px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot35" class="parking_lot_icon cam8" style="left: 7px; right:0; top: 370px; width:25px;"
+                    src="/images/web/lot_empty.png" />
+                <img id="lot36" class="parking_lot_icon cam8"
+                    style="left: 68px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot37" class="parking_lot_icon cam8"
+                    style="left: 128px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot38" class="parking_lot_icon cam8"
+                    style="left: 190px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot39" class="parking_lot_icon cam9"
+                    style="left: 250px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot40" class="parking_lot_icon cam9"
+                    style="left: 310px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot41" class="parking_lot_icon cam9"
+                    style="left: 372px; right:0; top: 370px; width:25px;" src="/images/web/lot_empty.png" />
+                <img id="lot42" class="parking_lot_icon cam9"
+                    style="left: 432px; right:0; top: 370px; width:25px;" src="/images/web/lot_use.png" />
+            </div>
+          </div>
+          <div class="col-md-6">
+              <img style="position:absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; height:auto;
+     margin-bottom: 30px; width:700px; z-index:0;" draggable="false" src="/images/web/parking_line_2.png" />
+
+              <img id="cam1" onclick="popup(this.id)" class="cam_icon"
+                  style="left: 540px; right:0; top: 75px; transform: rotate(90deg);" src="/images/web/lp_cam.png" />
+              <img id="light1" class="light_icon"
+                  style="left: 630px; right:0; top: 57px; width:190px; height:130px; transform: rotate(300deg);"
+                  src="/images/web/light.png" />
+
+              <img id="cam2" onclick="popup(this.id)" class="cam_icon" style="left: -300px; right:0; top: 450px; "
+                  src="/images/web/lp_cam.png" />
+              <img id="light2" class="light_icon"
+                  style="left: -300px; right:0; top: 250px; height:250px; transform: rotate(180deg);"
+                  src="/images/web/light.png" />
+
+              <img id="cam3" onclick="popup(this.id)" class="cam_icon" style="left: 110px; right:0; top: 230px;"
+                  src="/images/pt_cam.png" />
+              <img id="light3" class="ptz_icon" style="left: 115px; right:0; top: 250px; height:470px; opacity:0.4;"
+                  src="/images/web/circle_light_wide.png" />
+
+              <img id="light4" class="light_icon" style="left: -40px; right:0; top: 25px; height:250px;"
+                  src="/images/web/light.png" />
+              <img id="cam4" onclick="popup(this.id)" class="cam_icon" style="left: -40px; right:0; top: -20px; "
+                  src="/images/web/cam.png" />
+
+              <img id="light5" class="light_icon" style="left: 260px; right:0; top: 25px; height:250px;"
+                  src="/images/web/light.png" />
+              <img id="cam5" onclick="popup(this.id)" class="cam_icon" style="left: 260px; right:0; top: -20px; "
+                  src="/images/web/cam.png" />
+
+
+              <img id="light6" class="light_icon"
+                  style="left: -430px; right:0; top: 145px; height:250px; transform: rotate(90deg);"
+                  src="/images/web/light.png" />
+              <img id="cam6" onclick="popup(this.id)" class="cam_icon"
+                  style="left: -210px; right:0; top: 240px; transform: rotate(90deg);" src="/images/web/cam.png" />
+
+              <img id="light7" class="light_icon" style="left: -200px; right:0; top: 290px; height:250px;"
+                  src="/images/web/light.png" />
+              <img id="cam7" onclick="popup(this.id)" class="cam_icon" style="left: -200px; right:0; top: 280px; "
+                  src="/images/web/cam.png" />
+
+              <img id="light8" class="light_icon" style="left: 110px; right:0; top: 290px; height:250px;"
+                  src="/images/web/light.png" />
+              <img id="cam8" onclick="popup(this.id)" class="cam_icon" style="left: 110px; right:0; top: 280px; "
+                  src="/images/web/cam.png" />
+
+              <img id="light9" class="light_icon" style="left: 400px; right:0; top: 290px; height:250px;"
+                  src="/images/web/light.png" />
+              <img id="cam9" onclick="popup(this.id)" class="cam_icon" style="left: 400px; right:0; top: 280px; "
+                  src="/images/web/cam.png" />
+
+              <img id="light10" class="light_icon"
+                  style="left: 400px; right:0; top: 20px; height:250px; transform: rotate(180deg);"
+                  src="/images/web/light.png" />
+              <img id="cam10" onclick="popup(this.id)" class="cam_icon"
+                  style="left: 400px; right:0; top: 230px; transform: rotate(180deg);" src="/images/web/cam.png" />
+
+
+              <img id="light11" class="light_icon" style="left: -640px; right:0; top: 290px; height:250px;"
+                  src="/images/web/light.png" />
+              <img id="cam11" onclick="popup(this.id)" class="cam_icon" style="left: -640px; right:0; top: 260px; "
+                  src="/images/web/cam.png" />
+
+              <img id="light12" class="light_icon"
+                  style="left: -460px; right:0; top: 250px; height:250px; transform: rotate(180deg);"
+                  src="/images/web/light.png" />
+              <img id="cam12" onclick="popup(this.id)" class="cam_icon"
+                  style="left: -460px; right:0; top: 450px; transform: rotate(180deg);" src="/images/web/cam.png" />
+
+
+              <img id="light13" class="light_icon"
+                  style="left: -140px; right:0; top: 260px; height:250px; transform: rotate(180deg);"
+                  src="/images/web/light.png" />
+              <img id="cam13" onclick="popup(this.id)" class="cam_icon"
+                  style="left: -140px; right:0; top: 490px; transform: rotate(180deg);" src="/images/web/cam.png" />
+
+              <img id="light14" class="light_icon"
+                  style="left: 160px; right:0; top: 260px; height:250px; transform: rotate(180deg);"
+                  src="/images/web/light.png" />
+              <img id="cam14" onclick="popup(this.id)" class="cam_icon"
+                  style="left: 160px; right:0; top: 490px; transform: rotate(180deg);" src="/images/web/cam.png" />
+              <!-- <img class="cam_icon" style="left:600px; right:0; top:450px; width:40px;" src="/images/web/exclamation-circle-solid.png"/> -->
+          </div>
+        </div>
+
+        <div class="col-md-12"
+            style="margin-top:580px; background-color:white; border:1px solid gray; border-radius:15px;">
+            <div class="col-md-12" style="padding:20px; line-height:200%">
+                <span style="color:black;">
+                    <b>이 주차장은 서귀포시에서 만든 공영 주차장입니다.</b><br>
+                    • 차로 또는 출입구에 주차하는 차량과 장기간 무단방치하는 차량은 강제견인하게 됩니다.<br>
+                    • 불편하신 사항은 서귀포시 교통행정과(760-3132)로 연락하여 주시기 바랍니다.<br>
+                    • 영업용, 화물차, 건설기계 주차금지<br><br>
+                </span>
+
+                <table class="type03">
+                    <tr>
+                        <th scope="row"> 주차장 안내</th>
+                        <td id="welcome_detail" class="long" onclick="detail(this.id)">상세 보기</td>
+                        <td class="short"><i class="fas fa-exclamation-circle fa-lg"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> 장애인전용주차구역</th>
+                        <td id="wheel_detail" class="long" onclick="detail(this.id)">상세 보기</td>
+                        <td class="short"><img src="/images/web/lot_empty_wheel.png" style="height:30px;" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> 경차전용주차구역</th>
+                        <td id="light_detail" class="long" onclick="detail(this.id)">상세 보기</td>
+                        <td class="short"><text style="color:blue;">경차</text></td>
+                    </tr>
+                </table>
+
+                <table class="type03">
+                    <tr>
+                        <th scope="row"> IP카메라</th>
+                        <td style="width:150px; text-align: center; color:black; text-align:center;">QNO-7010R</td>
+                        <td id="ip_cam_detail" class="long" onclick="detail(this.id)">상세 보기</td>
+                        <td class="short"><img src="/images/web/cam.png"
+                                style="height:30px; transform:rotate(270deg);" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> 팬틸트 카메라</th>
+                        <td style="width:150px; text-align: center; color:black;">XNP-6320RH</td>
+                        <td id="ptz_cam_detail" class="long" onclick="detail(this.id)">상세 보기</td>
+                        <td class="short"><img src="/images/pt_cam.png" style="height:30px;" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> 차량식별 카메라</th>
+                        <td style="width:150px; text-align: center; color:black;">XNO-6095RH</td>
+                        <td id="lp_cam_detail" class="long" onclick="detail(this.id)">상세 보기</td>
+                        <td class="short"><img src="/images/web/lp_cam.png"
+                                style="height:30px; transform:rotate(90deg);" /></td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      $(document).ready(function(){
+        var lot_use = <%- JSON.stringify(lot_use) %>;
+        console.log(lot_use)
+        refreshInfo(lot_use);
+      });
+
+      function refreshInfo(lot_use) {
+          var empty_cnt = 0;
+          for(var i = 0; i < lot_use.length; i++){
+            temp_info = lot_use[i]
+            temp_cctv_id = temp_info.cctv_id
+            temp_lot_id = temp_info.lot_id
+            temp_lot_use = temp_info.lot_use
+            if (temp_lot_id == 0){
+              empty_cnt = temp_lot_use
+            }
+            // 우선 차있다고 그림처리
+            else if(temp_lot_id == -1){
+              console.log(temp_cctv_id)
+              $('.cam' + temp_cctv_id).attr("src", "/images/web/lot_use.png");
+            }
+            else{
+              if (temp_lot_use == 0){
+                $('#lot' + temp_lot_id).attr("src", "/images/web/lot_use.png");
+              }
+              else{
+                $('#lot' + temp_lot_id).attr("src", "/images/web/lot_empty.png");
+              }
+            }
+          }
+      }
+      $('.reload').click(function () {
+          location.reload();
+      });
+    </script>
+    <script>
+        function popup(id) {
+            console.log(id + ' is clicked!');
+            window.open("/seogwipo/popup?id=" + id, id + " window", "width=600, height=365, left=100, top=50");
+            // popup.document.title = "Camera" + id + " is connected.";
+        }
+    </script>
+
+    <script>
+        function detail(id) {
+            id = '#' + id;
+            // console.log(id);
+            if ($(id).text().length <= 5) {
+                var url = "/spec.txt " + id;
+                $(id).load(url);
+                $(id).removeClass('long');
+                $(id).addClass('detail');
+            } else {
+                $(id).text('상세 보기');
+                $(id).removeClass('detail');
+                $(id).addClass('long');
+            }
+        }
+
+        $('.cam_icon').mouseenter(function () {
+                var id = $(this).attr('id');
+                var numbering = id.substring(3, id.length);
+                var light = 'light' + numbering;
+                $('#' + light).css('display', 'block');
+            })
+            .mouseleave(function () {
+                var id = $(this).attr('id');
+                var numbering = id.substring(3, id.length);
+                var light = 'light' + numbering;
+                $('#' + light).css('display', 'none');
+            });
+    </script>
+
+</section>

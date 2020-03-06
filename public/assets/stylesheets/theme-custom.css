@@ -1,0 +1,20 @@
+/* Add here all your CSS customizations */
+canvas {
+    cursor: crosshair;
+    border: 1px solid #000000;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+#canvas {
+  width: 640px;
+  height: auto;
+}
+/*
+#canvas {
+  width: 640px;
+  height: auto;
+}
+*/

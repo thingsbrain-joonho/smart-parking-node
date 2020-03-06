@@ -1,0 +1,176 @@
+
+<% layout('/base') %>
+
+<section role="main" class="content-body">
+  <header class="page-header">
+  	<h2>Charge</h2>
+
+		<div class="right-wrapper pull-right">
+      <ol class="breadcrumbs">
+        <li>
+          <a href="/">
+            <i class="fa fa-home"></i>
+          </a>
+        </li>
+        <li><span>요금징수</span></li>
+      </ol>
+
+      <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+		</div>
+	</header>
+
+  <div class="row">
+    <div class="col-md-6 col-lg-6 col-xl-4">
+      <h5 class="text-semibold text-dark text-uppercase mb-md mt-lg">점유율 (00:00 ~ <%= now %>)</h5>
+
+      <section class="panel panel-featured panel-featured-primary">
+        <div class="panel-body">
+          <div class="row">
+          <%
+            row_lot.forEach(function(data){
+          %>
+            <div class="col-md-4">
+              <div class="circular-bar">
+                <div class="circular-bar-chart" data-percent="<%= data['percent'] %>"
+                     data-plugin-options='{ "barColor": "#0088CC", "delay": 300 }'> <!-- d4695e -->
+                  <strong><%= data['lot_id'] %>번칸</strong>
+                  <label>
+                    <span class="percent"><%= data['percent'] %></span>%
+                  </label>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+          </div>
+          <hr class="solid short mt-lg">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="h4 text-bold mb-none mt-lg"><%= total_time %>분</div>
+              <p class="text-xs text-muted mb-none">총 사용 시간</p>
+            </div>
+            <div class="col-md-6">
+              <div class="h4 text-bold mb-none mt-lg">₩ <%= total_profit %></div>
+              <p class="text-xs text-muted mb-none">총 금액</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!--
+      <section class="panel panel-featured-left panel-featured-secondary">
+        <div class="panel-body">
+          <div class="widget-summary">
+            <div class="widget-summary-col widget-summary-col-icon">
+              <div class="summary-icon bg-secondary">
+                <i class="fa fa-usd"></i>
+              </div>
+            </div>
+            <div class="widget-summary-col">
+              <div class="summary">
+                <h4 class="title">Today's Profit</h4>
+                <div class="info">
+                  <strong class="amount">₩ 124,800</strong>
+                </div>
+              </div>
+              <div class="summary-footer">
+                <a class="text-muted text-uppercase">(more)</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="panel panel-featured-left panel-featured-quartenary">
+        <div class="panel-body">
+          <div class="widget-summary">
+            <div class="widget-summary-col widget-summary-col-icon">
+              <div class="summary-icon bg-quartenary">
+                <i class="fa fa-user"></i>
+              </div>
+            </div>
+            <div class="widget-summary-col">
+              <div class="summary">
+                <h4 class="title">Today's Visitors</h4>
+                <div class="info">
+                  <strong class="amount">65</strong>
+                  <span class="text-primary">(오늘 들어온 차)</span>
+                </div>
+              </div>
+              <div class="summary-footer">
+                <a class="text-muted text-uppercase">(more)</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    -->
+    </div>
+
+    <div class="col-md-6 col-lg-6 col-xl-4">
+      <h5 class="text-semibold text-dark text-uppercase mb-md mt-lg">통계 그래프</h5>
+
+      <div class="tabs tabs-primary">
+        <ul class="nav nav-tabs nav-justified">
+          <li class="active">
+            <a href="#chart_hour" data-toggle="tab">시간별</a>
+          </li>
+          <li>
+            <a href="#chart_day" data-toggle="tab">Recent</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div id="chart_hour" class="tab-pane active">
+            <div class="chart chart-sm" id="flotWidgetsSales1"></div>
+            <script>
+              var flotWidgetsSales1Data = [{
+                  data: [ <%- chart_hour %> ],
+                  color: "#0088cc"
+              }];
+            </script>
+            <hr class="solid short mt-lg">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="h4 text-bold mb-none mt-lg">28</div>
+                <p class="text-xs text-muted mb-none">총 방문자</p>
+              </div>
+              <div class="col-md-4">
+                <div class="h4 text-bold mb-none mt-lg">₩ 500</div>
+                <p class="text-xs text-muted mb-none">10분당</p>
+              </div>
+              <div class="col-md-4">
+                <div class="h4 text-bold mb-none mt-lg">₩ <%= total_profit_hour %></div>
+                <p class="text-xs text-muted mb-none">총 이익</p>
+              </div>
+            </div>
+          </div>
+          <div id="chart_day" class="tab-pane">
+            <hr class="solid short mt-lg">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="h4 text-bold mb-none mt-lg">28</div>
+                <p class="text-xs text-muted mb-none">총 방문자</p>
+              </div>
+              <div class="col-md-4">
+                <div class="h4 text-bold mb-none mt-lg">₩ 500</div>
+                <p class="text-xs text-muted mb-none">10분당</p>
+              </div>
+              <div class="col-md-4">
+                <div class="h4 text-bold mb-none mt-lg">₩ <%= total_profit_hour %></div>
+                <p class="text-xs text-muted mb-none">총 이익</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <br/><br/>
+
+
+
+  <!-- end: page -->
+</section>
